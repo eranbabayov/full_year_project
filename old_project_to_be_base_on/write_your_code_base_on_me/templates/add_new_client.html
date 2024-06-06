@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Add New Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(255,255,255,.3);
+            margin: 0;
+            padding: 0;
+        }
+        .login-container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255,255,255,.3);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .login-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #9AA39C;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #717672;
+        }
+        .back-button {
+            background-color: #337ab7;
+        }
+        .back-button:hover {
+            background-color: #286090;
+        }
+
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h1>Add New Client</h1>
+    <form method="POST" action="{{ url_for('add_new_client') }}">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required>
+
+        <label for="sector_id">Client Sector:</label>
+        <select id="sector_id" name="sector_id" required>
+
+            {% for sector in sectors %}
+            <option value="{{ sector[1] }}">{{ sector[0] }}</option>
+            {% endfor %}
+        </select>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="package_id">Internet Package Type:</label>
+        <select id="package_id" name="package_id" required>
+            <option value="1">Basic</option>
+            <option value="2">Standard</option>
+            <option value="3">Premium</option>
+        </select>
+
+        <label for="ssn">ID:</label>
+        <input type="text" id="ssn" name="ssn" pattern="[0-9]{9}" required>
+
+        <label for="phone_number">phone number:</label>
+        <input type="tel" id="phone_number" name="phone_number" pattern="[0-9]{10}" required>
+
+
+        <button type="submit">Add New Client</button>
+    </form>
+    <form method="GET" action="{{ url_for('dashboard') }}">
+        <button class="back-button" type="submit">Back to Dashboard Page</button>
+    </form>
+</div>
+</body>
+</html>

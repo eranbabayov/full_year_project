@@ -1,0 +1,5 @@
+Flask==3.0.2
+flask_mail==0.9.1
+password_strength==0.0.3.post2
+pymssql==2.2.11
+python-dotenv==1.0.1
