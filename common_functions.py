@@ -36,14 +36,6 @@ def get_user_data_from_db(username=None, password=None):
         return cursor.fetchone()
 
 
-def get_all_sectors_names_from_db():
-    with conn.cursor(as_dict=True) as cursor:
-        cursor.execute("SELECT sector_name FROM sectors")
-        sectors = cursor.fetchall()
-        sectors = [sector['sector_name'] for sector in sectors]
-    return sectors
-
-
 def insert_new_client(client_data):
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(

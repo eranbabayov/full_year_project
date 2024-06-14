@@ -1,7 +1,7 @@
-CREATE DATABASE CommunicationLTD;
+CREATE DATABASE SecurityPerformance;
 GO
 
-USE CommunicationLTD;
+USE SecurityPerformance;
 GO
 
 CREATE TABLE sectors (
