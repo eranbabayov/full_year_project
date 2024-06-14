@@ -18,6 +18,9 @@ else
   echo "Database has not been initialized. Initializing database..."
     /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U SA -P ${MSSQL_SA_PASSWORD} -d master -i initialization.sql
 fi
+# Print the tables created in the SecurityPerformance database
+echo "Tables created in the SecurityPerformance database:"
+/opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U SA -P ${MSSQL_SA_PASSWORD} -d SecurityPerformance -Q "SELECT name FROM sys.tables;"
 
 # Keep the container running
 tail -f /dev/null

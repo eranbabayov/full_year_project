@@ -53,11 +53,11 @@ def insert_new_client(client_data):
     return client_id
 
 
-def get_user_sectors(user_id):
+def get_user_sectors(userID):
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(
-            "SELECT sector_name, sectors.sector_id FROM sectors JOIN user_sectors ON sectors.sector_id = user_sectors.sector_id WHERE user_id = %s",
-            (user_id,))
+            "SELECT sector_name, sectors.sector_id FROM sectors JOIN user_sectors ON sectors.sector_id = user_sectors.sector_id WHERE userID = %s",
+            (userID,))
         sectors = cursor.fetchall()
         sectors = [(sector['sector_name'], sector['sector_id'])
                    for sector in sectors]
@@ -78,10 +78,10 @@ def get_client_data_by_name(first_name, last_name):
         return cursor.fetchall()
 
 
-def get_user_salt(user_id):
+def get_user_salt(userID):
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(
-            "SELECT * FROM user_info WHERE user_id = %s", (user_id,))
+            "SELECT * FROM user_info WHERE userID = %s", (userID,))
         return cursor.fetchone()['salt']
 
 
@@ -98,26 +98,13 @@ def insert_new_user_to_db(new_username, new_password, new_email, salt):
         cursor.execute(
             "INSERT INTO users (username, password, email) VALUES (%s, %s, %s)",
             (new_username, new_password, new_email))
-        user_id = cursor.lastrowid
+        userID = cursor.lastrowid
         cursor.execute(
-            "INSERT INTO user_info (user_id,salt) VALUES (%s, %s)",
-            (user_id, salt))
+            "INSERT INTO user_info (userID,salt) VALUES (%s, %s)",
+            (userID, salt))
         cursor.execute(
-            "INSERT INTO password_history (user_id,password,salt) VALUES (%s, %s, %s)",
-            (user_id, new_password, salt))
-
-
-def insert_user_sectors_selected_to_db(publish_sectors, user_id):
-    with conn.cursor(as_dict=True) as cursor:
-        for sector in publish_sectors:
-            cursor.execute(
-                "SELECT sector_id FROM sectors WHERE sector_name = %s",
-                (sector,))
-            sector_id = cursor.fetchone()['sector_id']
-            cursor.execute(
-                "INSERT INTO user_sectors (user_id, sector_id) VALUES (%s, %s)",
-                (user_id, sector_id))
-    conn.commit()
+            "INSERT INTO password_history (userID,password,salt) VALUES (%s, %s, %s)",
+            (userID, new_password, salt))
 
 
 def validate_password(password) -> bool:
@@ -179,10 +166,10 @@ def change_user_password_in_db(email, new_password) -> bool:
             '''UPDATE users SET password = %s WHERE email = %s''',
             (new_password_hashed_hex, email))
         cursor.execute(
-            '''UPDATE user_info SET salt = %s WHERE user_id = (SELECT user_id FROM users WHERE email = %s)''',
+            '''UPDATE user_info SET salt = %s WHERE userID = (SELECT userID FROM users WHERE email = %s)''',
             (user_salt_hex, email))
         cursor.execute(
-            '''INSERT INTO password_history (user_id,password,salt) VALUES ((SELECT user_id FROM users WHERE email = %s), %s, %s)''',
+            '''INSERT INTO password_history (userID,password,salt) VALUES ((SELECT userID FROM users WHERE email = %s), %s, %s)''',
             (email, new_password_hashed_hex, user_salt_hex))
         conn.commit()
     return True
@@ -190,16 +177,16 @@ def change_user_password_in_db(email, new_password) -> bool:
 
 def check_previous_passwords(email, user_new_password):
     with conn.cursor(as_dict=True) as cursor:
-        # Get the user_id based on the email
+        # Get the userID based on the email
         cursor.execute(
-            '''SELECT user_id FROM users WHERE email = %s''',
+            '''SELECT userID FROM users WHERE email = %s''',
             (email,))
-        user_id = cursor.fetchone()['user_id']
+        userID = cursor.fetchone()['userID']
         # Retrieve the previous three passwords for the user
         cursor.execute(
-            '''SELECT TOP 3 * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY history_id DESC) AS rn
-        FROM password_history WHERE user_id = %s) AS recent_passwords ORDER BY rn;''',
-            (user_id,))
+            '''SELECT TOP 3 * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY historyID DESC) AS rn
+        FROM password_history WHERE userID = %s) AS recent_passwords ORDER BY rn;''',
+            (userID,))
         previous_passwords_data = [(row['password'], row['salt'])
                                    for row in cursor.fetchall()]
         return compare_passwords(user_new_password, previous_passwords_data)
@@ -218,7 +205,7 @@ def compare_passwords(user_new_password, previous_passwords_data) -> bool:
 
 def compare_to_current_password(user_data, password) -> bool:
     current_password = user_data['password']
-    current_salt = bytes.fromhex(get_user_salt(user_data['user_id']))
+    current_salt = bytes.fromhex(get_user_salt(user_data['userID']))
     hashed_password = hashlib.pbkdf2_hmac(
         'sha256', password.encode('utf-8'),
         current_salt, 100000)

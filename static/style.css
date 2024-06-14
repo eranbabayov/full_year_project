@@ -17,7 +17,7 @@ body {
   padding: 0;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url("security_image.jpeg");
+  background-image: url("security_img.png");
   display: flex;
   justify-content: center;
   align-items: center;

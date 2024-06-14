@@ -54,14 +54,14 @@ def login():
             flash('User does not exist')
             return redirect(url_for('login'))
 
-        salt_bytes = bytes.fromhex(get_user_salt(user_id=user_data['user_id']))
+        salt_bytes = bytes.fromhex(get_user_salt(userID=user_data['userID']))
         login_hashed_pwd = hashlib.pbkdf2_hmac(
             'sha256', password.encode('utf-8'), salt_bytes, 100000)
         user_hashed_password = bytes.fromhex(user_data['password'])
 
         if user_hashed_password == login_hashed_pwd:
             session['username'] = username
-            session['user_id'] = user_data['user_id']
+            session['userID'] = user_data['userID']
             failed_login_attempts[request.remote_addr] = 0
             return redirect(url_for('dashboard'))
         else:
@@ -103,10 +103,9 @@ def register():
             new_password_hashed_hex,
             new_email,
             user_salt_hex)
-        user_id = get_user_data_from_db(username=new_username)['user_id']
-        insert_user_sectors_selected_to_db(user_id)
+        userID = get_user_data_from_db(username=new_username)['userID']
         session['username'] = new_username
-        session['user_id'] = user_id
+        session['userID'] = userID
         return redirect(url_for('login', user_added="user added"))
 
     return render_template('register.html')
@@ -117,36 +116,7 @@ def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
     username = session['username']
-    client_data = request.args.getlist('client_data')
-    if client_data == ['False']:
-        return render_template('dashboard.html', username=username, client_data=client_data)
-    if client_data != []:
-        client_data = [ast.literal_eval(data) for data in client_data]
-        return render_template('dashboard.html', username=username, client_data=client_data)
     return render_template('dashboard.html', username=username)
-
-
-@app.route('/add_new_client', methods=['GET', 'POST'])
-def add_new_client():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        fields = [
-            'sector_id',
-            'package_id',
-            'ssn',
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number']
-        client_data = {field: request.form.get(field) for field in fields}
-        client_data['representative_id'] = session['user_id']
-        client_id = insert_new_client(client_data)
-        return redirect(url_for('dashboard', clientid=client_id))
-
-    sectors = get_user_sectors(session['user_id'])
-    return render_template('add_new_client.html', sectors=sectors)
 
 
 @app.route('/set_new_pwd', methods=['GET', 'POST'])
