@@ -63,7 +63,9 @@ def login():
             session['username'] = username
             session['userID'] = user_data['userID']
             failed_login_attempts[request.remote_addr] = 0
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('userDashboard',name= username))
+            # working as write, without real name
+            # return redirect('dashboard/<username>')
         else:
             flash('Invalid username or password')
             failed_login_attempts[request.remote_addr] += 1
@@ -118,6 +120,15 @@ def dashboard():
     username = session['username']
     return render_template('dashboard.html', username=username)
 
+@app.route('/<name>/dashboard')
+def userDashboard(name):
+    name = session['username']
+    return render_template('userDashboard.html', username=name)
+
+@app.route('/dashboard/<name>/Category_1')
+def category_1(name):
+    name = session['username']
+    return render_template('practice.html', username=name)
 
 @app.route('/set_new_pwd', methods=['GET', 'POST'])
 def set_new_pwd():

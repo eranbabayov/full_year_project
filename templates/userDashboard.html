@@ -28,9 +28,9 @@
             margin-bottom: 20px;
             text-align: center;
         }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        h1, p {
+            
+            color: #ccc;
         }
         p {
             margin-bottom: 10px;
@@ -75,19 +75,36 @@ tr:nth-child(even) {
     </style>
 </head>
 <body>
-<div class="container">
+<div>
 
     <h1>Welcome, {{ username }}!!</h1>
-
-
-    <a href="{{ url_for('logout') }}">
-        <button type="submit">Logout</button>
+    <p>Choose a catergory to practice:</p>
+    <a href="{{ url_for('category_1', name= username) }}">
+        <button type="submit">Category #1</button>
     </a>
-    <br><br>
-
     <a href="{{ url_for('set_new_pwd') }}">
-        <button type="submit">change my password</button>
+        <button type="submit">Category #2</button>
     </a>
+    <a href="{{ url_for('logout') }}">
+        <button type="submit">Category #3</button>
+    </a>
+    <a href="{{ url_for('set_new_pwd') }}">
+        <button type="submit">Category #4</button>
+    </a>
+    <a href="{{ url_for('logout') }}">
+        <button type="submit">Category #5</button>
+    </a>
+    <a href="{{ url_for('set_new_pwd') }}">
+        <button type="submit">Category #6</button>
+    </a>
+    <a href="{{ url_for('logout') }}">
+        <button type="submit">Category #7</button>
+    </a>
+    <a href="{{ url_for('set_new_pwd') }}">
+        <button type="submit">Category #1</button>
+    </a>
+
+
 
 </div>
 </body>

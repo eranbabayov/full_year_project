@@ -93,39 +93,18 @@ def check_if_user_exists_using_email(email: str) -> bool:
         return False
 
 
-def insert_new_user_to_db(new_username, new_password, new_email, salt, reset_token=None):
-    try:
-        # Set autocommit to False to manage transactions manually
-        conn.autocommit(False)
-
-        with conn.cursor(as_dict=True) as cursor:
-            # Insert into users table
-            cursor.execute(
-                "INSERT INTO users (username, password, email, reset_token) VALUES (%s, %s, %s, %s)",
-                (new_username, new_password, new_email, reset_token))
-            userID = cursor.lastrowid
-
-            # Insert into user_info table
-            cursor.execute(
-                "INSERT INTO user_info (userID, salt) VALUES (%s, %s)",
-                (userID, salt))
-
-            # Insert into password_history table
-            cursor.execute(
-                "INSERT INTO password_history (userID, password, salt) VALUES (%s, %s, %s)",
-                (userID, new_password, salt))
-
-        # Commit the transaction
-        conn.commit()
-
-    except Exception as e:
-        # Rollback the transaction in case of error
-        conn.rollback()
-        print(f"Error: {e}")
-
-    finally:
-        # Restore autocommit mode
-        conn.autocommit(True)
+def insert_new_user_to_db(new_username, new_password, new_email, salt):
+    with conn.cursor(as_dict=True) as cursor:
+        cursor.execute(
+            "INSERT INTO users (username, password, email) VALUES (%s, %s, %s)",
+            (new_username, new_password, new_email))
+        userID = cursor.lastrowid
+        cursor.execute(
+            "INSERT INTO user_info (userID,salt) VALUES (%s, %s)",
+            (userID, salt))
+        cursor.execute(
+            "INSERT INTO password_history (userID,password,salt) VALUES (%s, %s, %s)",
+            (userID, new_password, salt))
 
 
 def validate_password(password) -> bool:

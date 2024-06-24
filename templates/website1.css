@@ -1,0 +1,127 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('6037795.jpg'); /* Adjust image path if necessary */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #00ff00; /* Set font color */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 90%;
+    max-width: 1000px;
+    border: 1px solid #00ff00;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    box-sizing: border-box;
+    background-color: rgba(47, 82, 222, 0.6); /* Add a semi-transparent background for better readability */
+}
+
+.question {
+    display: none; /* Hide all questions initially */
+}
+
+.question:first-child {
+    display: block; /* Display the first question initially */
+}
+
+.box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    margin-bottom: 200px;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    box-sizing: border-box;
+}
+
+
+
+#code-box1, #code-box2, #code-box3, #code-box4, #code-box5, #code-box6, #code-box7, #code-box8, #code-box9, #code-box10, #code-box11 {
+    height: 400px; /* Adjust the height as needed */
+    padding: 15px;
+    overflow: auto;
+    margin-bottom: 10px;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    box-sizing: border-box;
+}
+
+#code-box1 pre, #code-box2 pre, #code-box3 pre, #code-box4 pre, #code-box5 pre, #code-box6 pre, #code-box7 pre, #code-box8 pre, #code-box9 pre, #code-box10 pre, #code-box11 pre {
+    margin: 0;
+    font-size: 14px;
+    color: #00ff00; /* Set font color for code */
+}
+
+#code-box1 label, #code-box2 label, #code-box3 label ,#code-box4 label ,#code-box5 label,#code-box6 label ,#code-box7 label ,#code-box8 label,#code-box9 label ,#code-box10 label ,#code-box11 label    {
+    display: flex;
+    align-items: flex-start; 
+    margin-bottom: 0; /* Adjust this value to reduce the vertical space between radio buttons */
+}
+
+
+.answer-box {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-section, .right-section {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+.right-section {
+    margin-right: 0;
+}
+
+.Correction_options button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    background-color: #00ff00;
+    color: rgb(0, 47, 255);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.Correction_options button:hover {
+    background-color: #00ff00;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.navigation button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #00ff00;
+    color: rgb(0, 47, 255);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.navigation button:hover {
+    background-color: #00ff00;
+}
+
+
+
+

@@ -1,4 +1,4 @@
-h1,
+
 label,
 p {
   color: #01579b
@@ -6,7 +6,7 @@ p {
 .flashes,
 .flashes li,
 .success-message,
-h1,
+
 p {
   text-align: center
 }
@@ -20,7 +20,6 @@ body {
   background-image: url("security_img.png");
   display: flex;
   justify-content: center;
-  align-items: center;
   height: 100vh
 }
 .login-container {
@@ -32,8 +31,7 @@ body {
   background-color: rgba(255,255,255,.3)
 }
 .success-message,
-form,
-h1 {
+form {
   margin-bottom: 20px
 }
 .success-message {

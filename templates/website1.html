@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Quiz</title>
+    <link rel="stylesheet" href="website1.css">
+</head>
+<body>
+    <div class="container">
+            <!-- Question 1: Broken Access Control -->
+            <div class="question" id="question1">
+                <h2>1. Broken Access Control</h2>
+                <div class="box" id="code-box1">
+                    <h3>Identify the error in the code:</h3>
+                    <pre>
+    <code>
+    <label><input type="radio" name="error-line1" value="1">1. if (user.isAuthenticated()) {</label>
+    <label><input type="radio" name="error-line1" value="2">2. if (user.role === 'admin') {</label>
+    <label><input type="radio" name="error-line1" value="3">3. // Admin functionality</label>
+    <label><input type="radio" name="error-line1" value="4">4. } else {</label>
+    <label><input type="radio" name="error-line1" value="5">5. // User functionality</label>
+    <label><input type="radio" name="error-line1" value="6">6. }</label>
+    <label><input type="radio" name="error-line1" value="7">7. }</label>
+    <label><input type="radio" name="error-line1" value="8">8. // Code that should be restricted</label>
+    <label><input type="radio" name="error-line1" value="9">9. console.log('Sensitive data');</label>
+    </code>
+                    </pre>
+                    <button onclick="detectError('question1')" style="width: 80px; height: 20px;">Submit</button>
+                </div>
+                <div id="answer-box1" class="answer-box">
+                    <div class="left-section">
+                        <h2>The incorrect code line is:</h2>
+                        <p>This line is the incorrect one for question 1</p>
+                    </div>
+                    <div class="right-section">
+                        <h2>Choose the best correction:</h2>
+                        <div class="Correction_options">
+                            <button onclick="openTextBox('1', '1')">1</button>
+                            <button onclick="openTextBox('1', '2')">2</button>
+                            <button onclick="openTextBox('1', '3')">3</button>
+                            <button onclick="openTextBox('1', '4')">4</button>
+                        </div>
+                        <div id="answerText1"></div>
+                        <br><br>
+                        <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2: Cryptographic Failure -->
+            <div class="question" id="question2" style="display: none;">
+                <h2>2. Cryptographic Failure</h2>
+                <div class="box" id="code-box2">
+                    <h3>Identify the error in the code:</h3>
+                    <pre>
+    <code>
+    <label><input type="radio" name="error-line2" value="1">1. const cipher = crypto.createCipher('aes192', 'a_password');</label>
+    <label><input type="radio" name="error-line2" value="2">2. let encrypted = cipher.update('some clear text data', 'utf8', 'hex');</label>
+    <label><input type="radio" name="error-line2" value="3">3. encrypted += cipher.final('hex');</label>
+    <label><input type="radio" name="error-line2" value="4">4. console.log(encrypted);</label>
+    </code>
+                    </pre>
+                    <button onclick="detectError('question2')" style="width: 80px; height: 20px;">Submit</button>
+                </div>
+                <div id="answer-box2" class="answer-box">
+                    <div class="left-section">
+                        <h2>The incorrect code line is:</h2>
+                        <p>This line is the incorrect one for question 2</p>
+                    </div>
+                    <div class="right-section">
+                        <h2>Choose the best correction:</h2>
+                        <div class="Correction_options">
+                            <button onclick="openTextBox('2', '1')">1</button>
+                            <button onclick="openTextBox('2', '2')">2</button>
+                            <button onclick="openTextBox('2', '3')">3</button>
+                            <button onclick="openTextBox('2', '4')">4</button>
+                        </div>
+                        <div id="answerText2"></div>
+                        <br><br>
+                        <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+             <!-- Question 3: Injection -->
+        <div class="question" id="question3" style="display: none;">
+            <h2> 3. Injection</h2>
+            <div class="box" id="code-box3">
+                <h3>Identify the error in the code:</h3>
+                <pre>
+                    <code>
+                        <label><input type="radio" name="error-line3" value="1">1. const query = req.query.search;</label>
+                        <label><input type="radio" name="error-line3" value="2">2. db.query('SELECT * FROM articles WHERE title = ' + query, function(err, result) {</label>
+                        <label><input type="radio" name="error-line3" value="3">3. if (err) throw err;</label>
+                        <label><input type="radio" name="error-line3" value="4">4. console.log(result);</label>
+                    </code>
+                </pre>
+                <button onclick="detectError('question3')" style="width: 80px; height: 20px;">Submit</button>
+            </div>
+                <div id="answer-box3" class="answer-box">
+                    <div class="left-section">
+                        <h2>The incorrect code line is:</h2>
+                        <p>This line is the incorrect one for question 3</p>
+                    </div>
+                    <div class="right-section">
+                        <h2>Choose the best correction:</h2>
+                        <div class="Correction_options">
+                            <button onclick="openTextBox('3', '1')">1</button>
+                            <button onclick="openTextBox('3', '2')">2</button>
+                            <button onclick="openTextBox('3', '3')">3</button>
+                            <button onclick="openTextBox('3', '4')">4</button>
+                        </div>
+                        <div id="answerText3"></div>
+                        <br><br>
+                        <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+
+             <!-- Question 4: Insecure Design -->
+         <div class="question" id="question4" style="display: none;">
+            <h2> 4. Insecure Design</h2>
+            <div class="box" id="code-box4">
+                <h3>Identify the error in the code:</h3>
+                <pre>
+                    <code>
+                        <label><input type="radio" name="error-line4" value="1">1.  const dbPassword = 'a_secret_password';</label>
+                        <label><input type="radio" name="error-line4" value="2">2. db.connect({ user: 'admin', password: dbPassword });</label>
+                        <label><input type="radio" name="error-line4" value="3">3. console.log('Connected to database');</label>
+                    </code>
+                </pre>
+                <button onclick="detectError('question4')" style="width: 80px; height: 20px;">Submit</button>
+            </div>
+                <div id="answer-box4" class="answer-box">
+                    <div class="left-section">
+                        <h2>The incorrect code line is:</h2>
+                        <p>This line is the incorrect one for question 4</p>
+                    </div>
+                    <div class="right-section">
+                        <h2>Choose the best correction:</h2>
+                        <div class="Correction_options">
+                            <button onclick="openTextBox('4', '1')">1</button>
+                            <button onclick="openTextBox('4', '2')">2</button>
+                            <button onclick="openTextBox('4', '3')">3</button>
+                            <button onclick="openTextBox('4', '4')">4</button>
+                        </div>
+                        <div id="answerText4"></div>
+                        <br><br>
+                        <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+              <!-- Question 5: Security Misconfiguration -->
+              <div class="question" id="question5" style="display: none;">
+                <h2> 5. Security Misconfiguration</h2>
+                <div class="box" id="code-box5">
+                    <h3>Identify the error in the code:</h3>
+                    <pre>
+                        <code>
+                            <label><input type="radio" name="error-line5" value="1">1.   app.use(express.static('public'));</label>
+                            <label><input type="radio" name="error-line5" value="2">2.   app.use(bodyParser.urlencoded({ extended: false }));</label>
+                            <label><input type="radio" name="error-line5" value="3">3.   app.set('view engine', 'ejs');</label>
+                        </code>
+                    </pre>
+                     <button onclick="detectError('question5')" style="width: 80px; height: 20px;">Submit</button>
+            </div>
+                <div id="answer-box5" class="answer-box">
+                    <div class="left-section">
+                        <h2>The incorrect code line is:</h2>
+                        <p>This line is the incorrect one for question 5</p>
+                    </div>
+                    <div class="right-section">
+                        <h2>Choose the best correction:</h2>
+                        <div class="Correction_options">
+                            <button onclick="openTextBox('5', '1')">1</button>
+                            <button onclick="openTextBox('5', '2')">2</button>
+                            <button onclick="openTextBox('5', '3')">3</button>
+                            <button onclick="openTextBox('5', '4')">4</button>
+                        </div>
+                        <div id="answerText5"></div>
+                        <br><br>
+                        <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                </div>
+            </div>
+
+
+             <!-- Question 6: Vulnerable and Outdated Components -->
+             <div class="question" id="question6" style="display: none;">
+                <h2> 6. Vulnerable and Outdated Components</h2>
+                <div class="box" id="code-box6">
+                    <h3>Identify the error in the code:</h3>
+                    <pre>
+                        <code>
+                            <label><input type="radio" name="error-line6" value="1">1.   const vulnerableLibrary = require('vulnerable-library');</label>
+                            <label><input type="radio" name="error-line6" value="2">2.   vulnerableLibrary.initialize({ apiKey: 'api_key_here' });</label>
+                            <label><input type="radio" name="error-line6" value="3">3.   console.log('Component initialized');</label>
+                        </code>
+                    </pre>
+                    <button onclick="detectError('question6')" style="width: 80px; height: 20px;">Submit</button>
+                </div>
+                    <div id="answer-box6" class="answer-box">
+                        <div class="left-section">
+                            <h2>The incorrect code line is:</h2>
+                            <p>This line is the incorrect one for question 6</p>
+                        </div>
+                        <div class="right-section">
+                            <h2>Choose the best correction:</h2>
+                            <div class="Correction_options">
+                                <button onclick="openTextBox('6', '1')">1</button>
+                                <button onclick="openTextBox('6', '2')">2</button>
+                                <button onclick="openTextBox('6', '3')">3</button>
+                                <button onclick="openTextBox('6', '4')">4</button>
+                            </div>
+                            <div id="answerText6"></div>
+                            <br><br>
+                            <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                 <!-- Question 7: Identification and Authentication -->
+             <div class="question" id="question7" style="display: none;">
+                <h2> 7. Identification and Authentication</h2>
+                <div class="box" id="code-box7">
+                    <h3>Identify the error in the code:</h3>
+                    <pre>
+                        <code>
+                            <label><input type="radio" name="error-line7" value="1">1.   const token = req.headers.authorization;</label>
+                            <label><input type="radio" name="error-line7" value="2">2.   const user = jwt.verify(token, 'secret_key');</label>
+                            <label><input type="radio" name="error-line7" value="3">3.   console.log('Authenticated user:', user.username);</label>
+                        </code>
+                    </pre>
+                    <button onclick="detectError('question7')" style="width: 80px; height: 20px;">Submit</button>
+                </div>
+                    <div id="answer-box7" class="answer-box">
+                        <div class="left-section">
+                            <h2>The incorrect code line is:</h2>
+                            <p>This line is the incorrect one for question 7</p>
+                        </div>
+                        <div class="right-section">
+                            <h2>Choose the best correction:</h2>
+                            <div class="Correction_options">
+                                <button onclick="openTextBox('7', '1')">1</button>
+                                <button onclick="openTextBox('7', '2')">2</button>
+                                <button onclick="openTextBox('7', '3')">3</button>
+                                <button onclick="openTextBox('7', '4')">4</button>
+                            </div>
+                            <div id="answerText7"></div>
+                            <br><br>
+                            <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Question 8: Failures   -->
+             <div class="question" id="question8" style="display: none;">
+                <h2> 8. Failures</h2>
+                <div class="box" id="code-box8">
+                    <h3>Identify the error in the code:</h3>
+                    <pre>
+                        <code>
+                            <label><input type="radio" name="error-line8" value="1">1.   const sensitiveData = req.body.sensitiveData;</label>
+                            <label><input type="radio" name="error-line8" value="2">2.   database.save(sensitiveData);</label>
+                            <label><input type="radio" name="error-line8" value="3">3.   console.log('Sensitive data saved');</label>
+                        </code>
+                        </code>
+                    </pre>
+                    <button onclick="detectError('question8')" style="width: 80px; height: 20px;">Submit</button>
+                </div>
+                    <div id="answer-box8" class="answer-box">
+                        <div class="left-section">
+                            <h2>The incorrect code line is:</h2>
+                            <p>This line is the incorrect one for question 8</p>
+                        </div>
+                        <div class="right-section">
+                            <h2>Choose the best correction:</h2>
+                            <div class="Correction_options">
+                                <button onclick="openTextBox('8', '1')">1</button>
+                                <button onclick="openTextBox('8', '2')">2</button>
+                                <button onclick="openTextBox('8', '3')">3</button>
+                                <button onclick="openTextBox('8', '4')">4</button>
+                            </div>
+                            <div id="answerText8"></div>
+                            <br><br>
+                            <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Question 9: Software and Data Integrity Failures   -->
+                <div class="question" id="question9" style="display: none;">
+                    <h2> 9. Software and Data Integrity Failures</h2>
+                    <div class="box" id="code-box9">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                <label><input type="radio" name="error-line9" value="1">1.   const data = req.body.data;</label>
+                                <label><input type="radio" name="error-line9" value="2">2.   const checksum = crypto.createHash('md5').update(data).digest('hex');</label>
+                                <label><input type="radio" name="error-line9" value="3">3.   console.log('Checksum calculated:', checksum);</label>
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question9')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box9" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 9</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('9', '1')">1</button>
+                                    <button onclick="openTextBox('9', '2')">2</button>
+                                    <button onclick="openTextBox('9', '3')">3</button>
+                                    <button onclick="openTextBox('9', '4')">4</button>
+                                </div>
+                                <div id="answerText9"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                     <!-- Question 10: Security Logging and Monitoring   -->
+                 <div class="question" id="question10" style="display: none;">
+                    <h2> 10. Security Logging and Monitoring</h2>
+                    <div class="box" id="code-box10">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                <label><input type="radio" name="error-line10" value="1">1.   const sensitiveData = req.body.sensitiveData;</label>
+                                <label><input type="radio" name="error-line10" value="2">2.   const sanitizedData = sanitize(sensitiveData);</label>
+                                <label><input type="radio" name="error-line10" value="3">3.   logger.info('Received sensitive data:', sanitizedData);</label>
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question10')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box10" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 10</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('10', '1')">1</button>
+                                    <button onclick="openTextBox('10', '2')">2</button>
+                                    <button onclick="openTextBox('10', '3')">3</button>
+                                    <button onclick="openTextBox('10', '4')">4</button>
+                                </div>
+                                <div id="answerText10"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                     <!-- Question 11: Server-Side Request Forgery (SSRF)   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                <label><input type="radio" name="error-line11" value="1">1.   const url = req.query.url;</label>
+                                <label><input type="radio" name="error-line11" value="2">2.   fetch(url).then(response => response.text()).then(data => console.log(data));</label>
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+        <!-- Navigation buttons -->
+        <div class="navigation">
+            <button id="prevButton" onclick="showPrev()">Previous</button>
+            <button id="nextButton" onclick="showNext()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        var currentQuestionIndex = 1;
+        const totalQuestions = 11;  // Update this as you add more questions
+
+        function showNext() {
+            document.getElementById('question' + currentQuestionIndex).style.display = 'none';
+            currentQuestionIndex = (currentQuestionIndex % totalQuestions) + 1;
+            document.getElementById('question' + currentQuestionIndex).style.display = 'block';
+        }
+
+        function showPrev() {
+            document.getElementById('question' + currentQuestionIndex).style.display = 'none';
+            currentQuestionIndex = (currentQuestionIndex - 2 + totalQuestions) % totalQuestions + 1;
+            document.getElementById('question' + currentQuestionIndex).style.display = 'block';
+        }
+
+        function openTextBox(questionNum, buttonNum) {
+            var answerText = '';
+            switch (buttonNum) {
+                case '1':
+                    answerText = "Blablablablablabla for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                case '2':
+                    answerText = "Another text for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                case '3':
+                    answerText = "Text for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                case '4':
+                    answerText = "Additional text for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                default:
+                    answerText = "Default text - question " + questionNum + ".";
+            }
+            document.getElementById('answerText' + questionNum).innerHTML = '<p>You chose answer number ' + buttonNum + '</p><p>' + answerText + '</p>';
+        }
+
+        function nextQuestion() {
+            showNext();
+        }
+    </script>
+</body>
+</html>
