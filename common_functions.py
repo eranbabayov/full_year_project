@@ -95,6 +95,8 @@ def check_if_user_exists_using_email(email: str) -> bool:
 
 def insert_new_user_to_db(new_username, new_password, new_email, salt):
     with conn.cursor(as_dict=True) as cursor:
+        # Start a transaction
+        conn.autocommit(False)
         cursor.execute(
             "INSERT INTO users (username, password, email) VALUES (%s, %s, %s)",
             (new_username, new_password, new_email))
@@ -105,6 +107,8 @@ def insert_new_user_to_db(new_username, new_password, new_email, salt):
         cursor.execute(
             "INSERT INTO password_history (userID,password,salt) VALUES (%s, %s, %s)",
             (userID, new_password, salt))
+        # Commit the transaction
+        conn.commit()
 
 
 def validate_password(password) -> bool:

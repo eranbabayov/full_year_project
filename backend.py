@@ -1,7 +1,7 @@
 import ast
 import string
 
-from flask import render_template, request, redirect, url_for, session
+from flask import jsonify, render_template, request, redirect, url_for, session
 from common_functions import *
 from app_configuration import app_configuration, get_security_parameters
 from flask_mail import Mail
@@ -42,6 +42,60 @@ def index():
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
+questions = [
+    {
+        "id": 1,
+        "title": "Broken Access Control",
+        "description": "Identify the error in the code:",
+        "code": [
+            "from flask import Flask, request, jsonify",
+            "app = Flask(__name__)",
+            "@app.route('/view_profile', methods=['GET'])",
+            "def view_profile():",
+            "    user_id = request.args.get('user_id')",
+            "    with open(f\"/home/users/{user_id}.json\", \"r\") as f:",
+            "        profile = f.read()",
+            "    return jsonify({\"profile\": profile})",
+            "if __name__ == '__main__':",
+            "    app.run()"
+        ],
+        "question": "Identify the error in the code::",
+        "correction_options": ["1", "2", "3", "4"],
+        "problematic_row": 8
+    },
+    {
+        "id": 2,
+        "title": "Cryptographic Failures",
+        "description": "Identify the error in the code:",
+        "code": [
+            "from flask import Flask, request, jsonify",
+            "app = Flask(__name__)",
+            "@app.route('/view_profile', methods=['GET'])",
+            "def view_profile():",
+            "    user_id = request.args.get('user_id')",
+            "    with open(f\"/home/users/{user_id}.json\", \"r\") as f:",
+            "        profile = f.read()",
+            "    return jsonify({\"profile\": profile})",
+            "if __name__ == '__main__':",
+            "    app.run()"
+        ],
+        "question": "Enter row number:",
+        "correction_options": ["1", "2", "3", "4"],
+        "problematic_row": 8
+    }
+    # Add more questions here
+]
+
+def ch():
+    pass
+
+@app.route('/web')
+def web():
+    return render_template('index.html', questions=questions)
+
+@app.route('/quiz')
+def get_questions():
+    return jsonify(questions)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -64,8 +118,6 @@ def login():
             session['userID'] = user_data['userID']
             failed_login_attempts[request.remote_addr] = 0
             return redirect(url_for('userDashboard',name= username))
-            # working as write, without real name
-            # return redirect('dashboard/<username>')
         else:
             flash('Invalid username or password')
             failed_login_attempts[request.remote_addr] += 1
@@ -112,6 +164,17 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/base')
+def base():
+    return render_template('base.html')
+
+@app.route('/base2')
+def base2():
+    return render_template('base2.html')
+
+@app.route('/may')
+def may():
+    return render_template('website1.html')
 
 @app.route('/dashboard')
 def dashboard():
@@ -120,15 +183,21 @@ def dashboard():
     username = session['username']
     return render_template('dashboard.html', username=username)
 
+
 @app.route('/<name>/dashboard')
 def userDashboard(name):
-    name = session['username']
     return render_template('userDashboard.html', username=name)
 
-@app.route('/dashboard/<name>/Category_1')
-def category_1(name):
+@app.route('/<name>/game')
+def startGame(name):
     name = session['username']
-    return render_template('practice.html', username=name)
+    return render_template('website1.html', username=name)
+
+
+@app.route('/game')
+def callGame():
+    username = session['username']
+    return redirect(url_for('startGame', name =username))
 
 @app.route('/set_new_pwd', methods=['GET', 'POST'])
 def set_new_pwd():

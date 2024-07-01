@@ -4,28 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Quiz</title>
-    <link rel="stylesheet" href="website1.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='website1.css') }}">
 </head>
 <body>
     <div class="container">
-            <!-- Question 1: Broken Access Control -->
+            <!-- QuestionID 0: Broken Access Control -->
             <div class="question" id="question1">
-                <h2>1. Broken Access Control</h2>
+                <h2>0. Broken Access Control</h2>
                 <div class="box" id="code-box1">
                     <h3>Identify the error in the code:</h3>
                     <pre>
     <code>
-    <label><input type="radio" name="error-line1" value="1">1. if (user.isAuthenticated()) {</label>
-    <label><input type="radio" name="error-line1" value="2">2. if (user.role === 'admin') {</label>
-    <label><input type="radio" name="error-line1" value="3">3. // Admin functionality</label>
-    <label><input type="radio" name="error-line1" value="4">4. } else {</label>
-    <label><input type="radio" name="error-line1" value="5">5. // User functionality</label>
-    <label><input type="radio" name="error-line1" value="6">6. }</label>
-    <label><input type="radio" name="error-line1" value="7">7. }</label>
-    <label><input type="radio" name="error-line1" value="8">8. // Code that should be restricted</label>
-    <label><input type="radio" name="error-line1" value="9">9. console.log('Sensitive data');</label>
+        (1) from flask import Flask, request, jsonify
+
+        (2) app = Flask(__name__)
+
+        (3) @app.route('/view_profile', methods=['GET'])
+        (4) def view_profile():
+        (5)     user_id = request.args.get('user_id')
+        (6)         with open(f""/home/users/{user_id}.json"", ""r"") as f:
+        (7)             profile = f.read()
+        (8)         return jsonify({""profile"": profile})
+
+        (9) if __name__ == '__main__':
+        (10)    app.run()
     </code>
                     </pre>
+                    <p>Enter row number:</p>
+                    <input type="text" id="q1" name="q1" required>
                     <button onclick="detectError('question1')" style="width: 80px; height: 20px;">Submit</button>
                 </div>
                 <div id="answer-box1" class="answer-box">
@@ -48,17 +54,28 @@
                 </div>
             </div>
 
-            <!-- Question 2: Cryptographic Failure -->
+            <!-- QuestionID 1: Broken Access Control -->
             <div class="question" id="question2" style="display: none;">
-                <h2>2. Cryptographic Failure</h2>
+                <h2>1. Cryptographic Failure</h2>
                 <div class="box" id="code-box2">
                     <h3>Identify the error in the code:</h3>
                     <pre>
     <code>
-    <label><input type="radio" name="error-line2" value="1">1. const cipher = crypto.createCipher('aes192', 'a_password');</label>
-    <label><input type="radio" name="error-line2" value="2">2. let encrypted = cipher.update('some clear text data', 'utf8', 'hex');</label>
-    <label><input type="radio" name="error-line2" value="3">3. encrypted += cipher.final('hex');</label>
-    <label><input type="radio" name="error-line2" value="4">4. console.log(encrypted);</label>
+        (1)from flask import Flask, request, jsonify
+        
+        (2)app = Flask(__name__)
+        
+        (3)@app.route('/update_role', methods=['POST'])
+        (4)def update_role():
+        (5)    user_id = request.form['user_id']
+        (6)    new_role = request.form['role']
+        (7)    # Update the role in the database
+        (8)    update_user_role(user_id, new_role)
+        (9)    return jsonify({""message"": ""Role updated successfully""})
+        
+        (10)if __name__ == '__main__':
+        (11)    app.run()
+
     </code>
                     </pre>
                     <button onclick="detectError('question2')" style="width: 80px; height: 20px;">Submit</button>
@@ -83,21 +100,26 @@
                 </div>
             </div>
 
-
-
-
-
-             <!-- Question 3: Injection -->
+             <!-- QuestionID 3: Cryptographic Failures -->
         <div class="question" id="question3" style="display: none;">
-            <h2> 3. Injection</h2>
+            <h2> 2. Cryptographic Failures</h2>
             <div class="box" id="code-box3">
                 <h3>Identify the error in the code:</h3>
                 <pre>
                     <code>
-                        <label><input type="radio" name="error-line3" value="1">1. const query = req.query.search;</label>
-                        <label><input type="radio" name="error-line3" value="2">2. db.query('SELECT * FROM articles WHERE title = ' + query, function(err, result) {</label>
-                        <label><input type="radio" name="error-line3" value="3">3. if (err) throw err;</label>
-                        <label><input type="radio" name="error-line3" value="4">4. console.log(result);</label>
+                        (1)from flask import Flask, request, jsonify
+                        (2)import hashlib
+
+                        (3)app = Flask(__name__)
+
+                        (4)@app.route('/hash_password', methods=['POST'])
+                        (5)def hash_password():
+                        (6)    password = request.form['password']
+                        (7)    hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
+                        (8)    return jsonify({""hashed_password"": hashed_password})
+
+                        (9)if __name__ == '__main__':
+                        (10)    app.run()
                     </code>
                 </pre>
                 <button onclick="detectError('question3')" style="width: 80px; height: 20px;">Submit</button>
@@ -123,16 +145,25 @@
             </div>
 
 
-             <!-- Question 4: Insecure Design -->
+             <!-- QuestionID 2: Cryptographic Failures -->
          <div class="question" id="question4" style="display: none;">
             <h2> 4. Insecure Design</h2>
             <div class="box" id="code-box4">
                 <h3>Identify the error in the code:</h3>
                 <pre>
                     <code>
-                        <label><input type="radio" name="error-line4" value="1">1.  const dbPassword = 'a_secret_password';</label>
-                        <label><input type="radio" name="error-line4" value="2">2. db.connect({ user: 'admin', password: dbPassword });</label>
-                        <label><input type="radio" name="error-line4" value="3">3. console.log('Connected to database');</label>
+                        (1) from flask import Flask, request, jsonify
+
+                        (2) app = Flask(__name__)
+
+                        (3) @app.route('/encrypt', methods=['POST'])
+                        (4) def encrypt():
+                        (5)     data = request.form['data']
+                        (6)     encrypted_data = data.encode('utf-8').hex()
+                        (7)     return jsonify({""encrypted_data"": encrypted_data})
+
+                        (8) if __name__ == '__main__':
+                        (9)      app.run()
                     </code>
                 </pre>
                 <button onclick="detectError('question4')" style="width: 80px; height: 20px;">Submit</button>
@@ -157,18 +188,31 @@
                 </div>
             </div>
 
-
-
-              <!-- Question 5: Security Misconfiguration -->
+              <!-- QuestionID 4: Injection -->
               <div class="question" id="question5" style="display: none;">
                 <h2> 5. Security Misconfiguration</h2>
                 <div class="box" id="code-box5">
                     <h3>Identify the error in the code:</h3>
                     <pre>
                         <code>
-                            <label><input type="radio" name="error-line5" value="1">1.   app.use(express.static('public'));</label>
-                            <label><input type="radio" name="error-line5" value="2">2.   app.use(bodyParser.urlencoded({ extended: false }));</label>
-                            <label><input type="radio" name="error-line5" value="3">3.   app.set('view engine', 'ejs');</label>
+                            (1) from flask import Flask, request, jsonify
+                            (2) import sqlite3
+
+                            (3) app = Flask(__name__)
+
+                            (4) @app.route('/get_product', methods=['GET'])
+                            (5) def get_product():
+                            (6)     product_id = request.args.get('product_id')
+                            (7)     conn = sqlite3.connect('example.db')
+                            (8)     cursor = conn.cursor()
+                            (9)     query = f""SELECT * FROM products WHERE id = {product_id}""
+                            (10)     cursor.execute(query)
+                            (11)     result = cursor.fetchone()
+                            (12)     conn.close()
+                            (13)     return jsonify(result)
+
+                            (14) if __name__ == '__main__':
+                            (15)     app.run()
                         </code>
                     </pre>
                      <button onclick="detectError('question5')" style="width: 80px; height: 20px;">Submit</button>
@@ -194,16 +238,31 @@
             </div>
 
 
-             <!-- Question 6: Vulnerable and Outdated Components -->
+             <!-- QuestionID 5: Injection -->
              <div class="question" id="question6" style="display: none;">
                 <h2> 6. Vulnerable and Outdated Components</h2>
                 <div class="box" id="code-box6">
                     <h3>Identify the error in the code:</h3>
                     <pre>
                         <code>
-                            <label><input type="radio" name="error-line6" value="1">1.   const vulnerableLibrary = require('vulnerable-library');</label>
-                            <label><input type="radio" name="error-line6" value="2">2.   vulnerableLibrary.initialize({ apiKey: 'api_key_here' });</label>
-                            <label><input type="radio" name="error-line6" value="3">3.   console.log('Component initialized');</label>
+                            (1) from flask import Flask, request, jsonify
+                            (2) import mysql.connector
+
+                            (3) app = Flask(__name__)
+
+                            (4) @app.route('/get_order', methods=['GET'])
+                            (5) def get_order():
+                            (6)     order_id = request.args.get('order_id')
+                            (7)     conn = mysql.connector.connect(user='root', password='password', host='localhost', database='shop')
+                            (8)     cursor = conn.cursor()
+                            (9)     query = f""SELECT * FROM orders WHERE id = {order_id}""
+                            (10)     cursor.execute(query)
+                            (11)     result = cursor.fetchone()
+                            (12)     conn.close()
+                            (13)     return jsonify(result)
+
+                            (14) if __name__ == '__main__':
+                            (15)     app.run()
                         </code>
                     </pre>
                     <button onclick="detectError('question6')" style="width: 80px; height: 20px;">Submit</button>
@@ -230,16 +289,36 @@
 
                 
 
-                 <!-- Question 7: Identification and Authentication -->
+                 <!-- QuestionID 6: Insecure Design -->
              <div class="question" id="question7" style="display: none;">
                 <h2> 7. Identification and Authentication</h2>
                 <div class="box" id="code-box7">
                     <h3>Identify the error in the code:</h3>
                     <pre>
                         <code>
-                            <label><input type="radio" name="error-line7" value="1">1.   const token = req.headers.authorization;</label>
-                            <label><input type="radio" name="error-line7" value="2">2.   const user = jwt.verify(token, 'secret_key');</label>
-                            <label><input type="radio" name="error-line7" value="3">3.   console.log('Authenticated user:', user.username);</label>
+                            "
+                        (1) from flask import Flask, request, jsonify
+
+                        (2) app = Flask(__name__)
+
+                        (3) users = []
+
+                        (4) @app.route('/register', methods=['POST'])
+                        (5) def register():
+                        (6)     user_data = request.json
+                        (7)     users.append(user_data)
+                        (8)     return jsonify({""message"": ""User registered successfully""})
+
+                        (9) @app.route('/login', methods=['POST'])
+                        (10) def login():
+                        (11)     login_data = request.json
+                        (12)     for user in users:
+                        (13)         if user['username'] == login_data['username'] and user['password'] == login_data['password']:
+                        (14)         return jsonify({""message"": ""Login successful""})
+                        (15) return jsonify({""error"": ""Invalid username or password""}), 401
+
+                        (16) if __name__ == '__main__':
+                        (17)     app.run()
                         </code>
                     </pre>
                     <button onclick="detectError('question7')" style="width: 80px; height: 20px;">Submit</button>
@@ -265,16 +344,25 @@
                 </div>
 
 
-                <!-- Question 8: Failures   -->
+                <!-- QuestionID 7: Failures   -->
              <div class="question" id="question8" style="display: none;">
                 <h2> 8. Failures</h2>
                 <div class="box" id="code-box8">
                     <h3>Identify the error in the code:</h3>
                     <pre>
                         <code>
-                            <label><input type="radio" name="error-line8" value="1">1.   const sensitiveData = req.body.sensitiveData;</label>
-                            <label><input type="radio" name="error-line8" value="2">2.   database.save(sensitiveData);</label>
-                            <label><input type="radio" name="error-line8" value="3">3.   console.log('Sensitive data saved');</label>
+                            (1) from flask import Flask, request, jsonify
+                            
+                            (2) app = Flask(__name__)
+                            
+                            (3) @app.route('/update_profile', methods=['POST'])
+                            (4) def update_profile():
+                            (5)     user_data = request.json
+                            (6)     # No authentication check
+                            (7)     return jsonify({""message"": ""Profile updated successfully""})
+                            
+                            (8) if __name__ == '__main__':
+                            (9)     app.run()                            
                         </code>
                         </code>
                     </pre>
@@ -301,16 +389,25 @@
                 </div>
 
 
-                <!-- Question 9: Software and Data Integrity Failures   -->
+                <!-- QuestionID 8: Security Misconfiguration   -->
                 <div class="question" id="question9" style="display: none;">
                     <h2> 9. Software and Data Integrity Failures</h2>
                     <div class="box" id="code-box9">
                         <h3>Identify the error in the code:</h3>
                         <pre>
                             <code>
-                                <label><input type="radio" name="error-line9" value="1">1.   const data = req.body.data;</label>
-                                <label><input type="radio" name="error-line9" value="2">2.   const checksum = crypto.createHash('md5').update(data).digest('hex');</label>
-                                <label><input type="radio" name="error-line9" value="3">3.   console.log('Checksum calculated:', checksum);</label>
+                                (1) from flask import Flask
+
+                                (2) app = Flask(__name__)
+
+                                (3) app.config['DEBUG'] = True
+
+                                (4) @app.route('/')
+                                (5) def index():
+                                (6)     return ""Hello, World!""
+
+                                (7) if __name__ == '__main__':
+                                (8)     app.run()
                             </code>
                         </pre>
                         <button onclick="detectError('question9')" style="width: 80px; height: 20px;">Submit</button>
@@ -336,16 +433,25 @@
                     </div>
 
 
-                     <!-- Question 10: Security Logging and Monitoring   -->
+                     <!-- QuestionID 9: Security Misconfiguration   -->
                  <div class="question" id="question10" style="display: none;">
                     <h2> 10. Security Logging and Monitoring</h2>
                     <div class="box" id="code-box10">
                         <h3>Identify the error in the code:</h3>
                         <pre>
                             <code>
-                                <label><input type="radio" name="error-line10" value="1">1.   const sensitiveData = req.body.sensitiveData;</label>
-                                <label><input type="radio" name="error-line10" value="2">2.   const sanitizedData = sanitize(sensitiveData);</label>
-                                <label><input type="radio" name="error-line10" value="3">3.   logger.info('Received sensitive data:', sanitizedData);</label>
+                                (1) from flask import Flask
+
+                                (2) app = Flask(__name__)
+
+                                (3) app.config['SECRET_KEY'] = 'hardcoded_secret_key'
+
+                                (4) @app.route('/')
+                                (5) def index():
+                                (6)     return ""Hello, World!""
+
+                                (7) if __name__ == '__main__':
+                                (8)     app.run()
                             </code>
                         </pre>
                         <button onclick="detectError('question10')" style="width: 80px; height: 20px;">Submit</button>
@@ -371,15 +477,730 @@
                     </div>
 
 
-                     <!-- Question 11: Server-Side Request Forgery (SSRF)   -->
+                     <!-- QuestionID 10: Security Misconfiguration   -->
                  <div class="question" id="question11" style="display: none;">
                     <h2> 11. Server-Side Request Forgery (SSRF)</h2>
                     <div class="box" id="code-box11">
                         <h3>Identify the error in the code:</h3>
                         <pre>
                             <code>
-                                <label><input type="radio" name="error-line11" value="1">1.   const url = req.query.url;</label>
-                                <label><input type="radio" name="error-line11" value="2">2.   fetch(url).then(response => response.text()).then(data => console.log(data));</label>
+                                (1) from flask import Flask
+
+                                (2) app = Flask(__name__)
+
+                                (3) @app.route('/')
+                                (4) def index():
+                                (5)     return ""Hello, World!""
+
+                                (6) if __name__ == '__main__':
+                                (7)     app.run()
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 11: Vulnerable and Outdates Components   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask, request, jsonify
+                                (2) import requests
+
+                                (3) app = Flask(__name__)
+
+                                (4) @app.route('/proxy', methods=['POST'])
+                                (5) def proxy_request():
+                                (6)     data = request.json
+                                (7)     response = requests.post(""http://example.com/api"", json=data)
+                                (8)     return jsonify(response.json())
+
+                                (9) if __name__ == '__main__':
+                                (10)     app.run()
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 12: Vulnerable and Outdates Components   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask, request, jsonify
+                                (2) import jwt
+
+                                (3) app = Flask(__name__)
+
+                                (4) @app.route('/token', methods=['POST'])
+                                (5) def generate_token():
+                                (6)     user_data = request.json
+                                (7)     token = jwt.encode(user_data, ""secret"", algorithm=""HS256"")
+                                (8)     return jsonify({""token"": token})
+
+                                (9) if __name__ == '__main__':
+                                (10)     app.run()
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 13: Vulnerable and Outdates Components   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask
+                                (2) import yaml
+
+                                (3) app = Flask(__name__)
+
+                                (4) @app.route('/config', methods=['POST'])
+                                (5) def load_config():
+                                (6)     config_data = request.data
+                                (7)     config = yaml.safe_load(config_data)
+                                (8)     return str(config)
+
+                                (9) if __name__ == '__main__':
+                                (10)     app.run()
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 14: Identification and Authentication Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) users = [
+                                (4)     {""username"": ""user1"", ""password"": ""password1""},
+                                (5)     {""username"": ""user2"", ""password"": ""password2""}
+                                (6) ]
+
+                                (7) @app.route('/login', methods=['POST'])
+                                (8) def login():
+                                (9)     login_data = request.json
+                                (10)     for user in users:
+                                (11)         if user['username'] == login_data['username'] and user['password'] == login_data['password']:
+                                (12)             return jsonify({""message"": ""Login successful""})
+                                (13) return jsonify({""error"": ""Invalid username or password""}), 401
+
+                                (14) if __name__ == '__main__':
+                                (15)     app.run()
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 15: Identification and Authentication Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) users = [
+                                (4)     {""username"": ""admin"", ""password"": ""admin""},
+                                (5)     {""username"": ""guest"", ""password"": ""guest""}
+                                (6) ]
+
+                                (7) @app.route('/admin', methods=['POST'])
+                                (8) def admin_login():
+                                (9)     login_data = request.json
+                                (10)     for user in users:
+                                (11)         if user['username'] == login_data['username'] and user['password'] == login_data['password']:
+                                (12)             return jsonify({""message"": ""Welcome, admin!""})
+                                (13)     return jsonify({""error"": ""Invalid credentials""}), 401
+
+                                (14) if __name__ == '__main__':
+                                (15)     app.run()
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 16: Identification and Authentication Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) users = [
+                                (4)     {""username"": ""admin"", ""password"": ""admin123""},
+                                (5)     {""username"": ""user"", ""password"": ""user123""}
+                                (6) ]
+
+                                (7) @app.route('/change-password', methods=['POST'])
+                                (8) def change_password():
+                                (9)     data = request.json
+                                (10)     for user in users:
+                                (11)         if user['username'] == data['username'] and user['password'] == data['old_password']:
+                                (12)             user['password'] = data['new_password']
+                                (13)             return jsonify({""message"": ""Password changed successfully""})
+                                (14)     return jsonify({""error"": ""Invalid credentials""}), 401
+
+                                (15) if __name__ == '__main__':
+                                (16)     app.run()
+                                
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 17: Software and Data Integrity Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                (1) from flask import Flask, request, jsonify
+                                (2) import subprocess
+
+                                (3) app = Flask(__name__)
+
+                                (4) @app.route('/run-command', methods=['POST'])
+                                (5) def run_command():
+                                (6)     data = request.json
+                                (7)     command = data['command']
+                                (8)     result = subprocess.run(command, shell=True, capture_output=True, text=True)
+                                (9)     return jsonify({""output"": result.stdout})
+
+                                (10) if __name__ == '__main__':
+                                (11)     app.run()
+                                
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 18: Software and Data Integrity Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) @app.route('/update-data', methods=['POST'])
+                                (4) def update_data():
+                                (5)     data = request.json
+                                (6)     with open('data.txt', 'w') as file:
+                                (7)         file.write(data['content'])
+                                (8)     return jsonify({""message"": ""Data updated successfully""})
+
+                                (9) if __name__ == '__main__':
+                                (10)     app.run()
+                                
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 19: Software and Data Integrity Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) @app.route('/restore-data', methods=['POST'])
+                                (4) def restore_data():
+                                (5)     data = request.json
+                                (6)     backup_file = data['backup_file']
+                                (7)     with open('data.txt', 'w') as file:
+                                (8)         with open(backup_file, 'r') as backup:
+                                (9)             file.write(backup.read())
+                                (10) return jsonify({""message"": ""Data restored successfully""})
+
+                                (11) if __name__ == '__main__':
+                                (12)     app.run()
+                                
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 20: Security Logging and Monitoring Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) @app.route('/login', methods=['POST'])
+                                (4) def login():
+                                (5)     data = request.json
+                                (6)     username = data['username']
+                                (7)     password = data['password']
+                                (8) if username == ""admin"" and password == ""password123"":
+                                (9)     return jsonify({""message"": ""Login successful""})
+                                (10) else:
+                                (11)     return jsonify({""error"": ""Invalid credentials""}), 401
+
+                                (12) if __name__ == '__main__':
+                                (13)     app.run()
+
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 21: Security Logging and Monitoring Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) @app.route('/transfer', methods=['POST'])
+                                (4) def transfer():
+                                (5)     data = request.json
+                                (6)     from_account = data['from_account']
+                                (7)     to_account = data['to_account']
+                                (8)     amount = data['amount']
+                                (9)     # Assume the transfer logic here
+                                (10)     return jsonify({""message"": ""Transfer completed""})
+
+                                (11) if __name__ == '__main__':
+                                (12)     app.run()
+
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 22: Security Logging and Monitoring Failures   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+                                
+                                (1) from flask import Flask, request, jsonify
+
+                                (2) app = Flask(__name__)
+
+                                (3) @app.route('/data-access', methods=['GET'])
+                                (4) def data_access():
+                                (5)     data_id = request.args.get('id')
+                                (6)     # Assume data fetching logic here
+                                (7)     return jsonify({""message"": ""Data fetched successfully""})
+
+                                (8) if __name__ == '__main__':
+                                (9)     app.run()
+
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 23: Server-Side Request Forgery (SSRF)   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+
+                                (1) from flask import Flask, request, jsonify
+                                (2) import requests
+
+                                (3) app = Flask(__name__)
+
+                                (4) @app.route('/fetch-data', methods=['POST'])
+                                (5) def fetch_data():
+                                (6)     data = request.json
+                                (7)     url = data['url']
+                                (8)     response = requests.get(url)
+                                (9)     return jsonify({""data"": response.text})
+
+                                (10) if __name__ == '__main__':
+                                (11)     app.run()
+
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 24: Server-Side Request Forgery (SSRF)   -->
+                 <div class="question" id="question11" style="display: none;">
+                    <h2> 11. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box11">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+
+                                (1) from flask import Flask, request, jsonify
+                                (2) import requests
+
+                                (3) app = Flask.__name__
+
+                                (4) @app.route('/proxy', methods=['POST'])
+                                (5) def proxy():
+                                (6)     data = request.json
+                                (7)     url = data['url']
+                                (8)     response = requests.get(url)
+                                (9)     return jsonify({""data"": response.text})
+
+                                (10) if __name__ == '__main__':
+                                (11)     app.run()
+
+                            </code>
+                        </pre>
+                        <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
+                    </div>
+                        <div id="answer-box11" class="answer-box">
+                            <div class="left-section">
+                                <h2>The incorrect code line is:</h2>
+                                <p>This line is the incorrect one for question 11</p>
+                            </div>
+                            <div class="right-section">
+                                <h2>Choose the best correction:</h2>
+                                <div class="Correction_options">
+                                    <button onclick="openTextBox('11', '1')">1</button>
+                                    <button onclick="openTextBox('11', '2')">2</button>
+                                    <button onclick="openTextBox('11', '3')">3</button>
+                                    <button onclick="openTextBox('11', '4')">4</button>
+                                </div>
+                                <div id="answerText11"></div>
+                                <br><br>
+                                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- QuestionID 25: Server-Side Request Forgery (SSRF)   -->
+                 <div class="question" id="question25" style="display: none;">
+                    <h2> 25. Server-Side Request Forgery (SSRF)</h2>
+                    <div class="box" id="code-box25">
+                        <h3>Identify the error in the code:</h3>
+                        <pre>
+                            <code>
+
+                                (1) from flask import Flask, request, jsonify
+                                (2) import requests
+
+                                (3) app = Flask.__name__
+
+                                (4) @app.route('/fetch-content', methods=['POST'])
+                                (5) def fetch_content():
+                                (6)     data = request.json
+                                (7)     url = data['url']
+                                (8)     response = requests.get(url)
+                                (9)     return jsonify({""content"": response.text})
+
+                                (10) if __name__ == '__main__':
+                                (11)     app.run()
+
                             </code>
                         </pre>
                         <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>

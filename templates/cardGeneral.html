@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Quiz</title>
+    <link rel="stylesheet" href='static\website1.css'>
+</head>
+<body>
+    <div class="container">
+        <p>DATA CARD</p>
+        {% block questionCard %}
+        {% endblock questionCard %}
+        <!-- Navigation buttons -->
+        <div class="navigation">
+            <button id="prevButton" onclick="showPrev()">Previous</button>
+            <button id="nextButton" onclick="showNext()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        var currentQuestionIndex = 1;
+        const totalQuestions = 11;  // Update this as you add more questions
+
+        function showNext() {
+            document.getElementById('question' + currentQuestionIndex).style.display = 'none';
+            currentQuestionIndex = (currentQuestionIndex % totalQuestions) + 1;
+            document.getElementById('question' + currentQuestionIndex).style.display = 'block';
+        }
+
+        function showPrev() {
+            document.getElementById('question' + currentQuestionIndex).style.display = 'none';
+            currentQuestionIndex = (currentQuestionIndex - 2 + totalQuestions) % totalQuestions + 1;
+            document.getElementById('question' + currentQuestionIndex).style.display = 'block';
+        }
+
+        function openTextBox(questionNum, buttonNum) {
+            var answerText = '';
+            switch (buttonNum) {
+                case '1':
+                    answerText = "Blablablablablabla for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                case '2':
+                    answerText = "Another text for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                case '3':
+                    answerText = "Text for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                case '4':
+                    answerText = "Additional text for option " + buttonNum + " - question " + questionNum + ".";
+                    break;
+                default:
+                    answerText = "Default text - question " + questionNum + ".";
+            }
+            document.getElementById('answerText' + questionNum).innerHTML = '<p>You chose answer number ' + buttonNum + '</p><p>' + answerText + '</p>';
+        }
+
+        function nextQuestion() {
+            showNext();
+        }
+    </script>
+</body>
+</html>

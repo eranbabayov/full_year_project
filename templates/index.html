@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .nav-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .question-card {
+            display: none;
+        }
+        .question-card.active {
+            display: block;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% for question in questions %}
+        <div class="question-card" id="question-{{ question.id }}">
+            <h2>{{ question.id }}. {{ question.title }}</h2>
+            <p>{{ question.description }}</p>
+            <pre><code>{{ question.code | join('\n') }}</code></pre>
+            <label for="row-number-{{ question.id }}">Enter row number:</label>
+            <br>
+            <button style="width: 80px; height: 20px;">Submit</button>
+            <input type="text" id="row-number-{{ question.id }}" name="row-number">
+            <h3>The incorrect code line is:</h3>
+            <p>This line is the incorrect one for question {{ question.id }}</p>
+            <h3>Choose the best correction:</h3>
+            <div>
+                {% for option in question.correction_options %}
+                <button>{{ option }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        <div class="navigation">
+            <button class="nav-button" id="prev-button" onclick="navigate(-1)">Previous</button>
+            <button class="nav-button" id="next-button" onclick="navigate(1)">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        const questions = document.querySelectorAll('.question-card');
+
+        document.addEventListener("DOMContentLoaded", function() {
+            displayQuestion(currentQuestionIndex);
+        });
+
+        function displayQuestion(index) {
+            questions.forEach((question, i) => {
+                question.classList.toggle('active', i === index);
+            });
+            document.getElementById('prev-button').disabled = index === 0;
+            document.getElementById('next-button').disabled = index === questions.length - 1;
+        }
+
+        function navigate(direction) {
+            const newIndex = currentQuestionIndex + direction;
+            if (newIndex >= 0 && newIndex < questions.length) {
+                currentQuestionIndex = newIndex;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+[
+    {
+        "challengeID":0,
+        "category":"Broken Access Control",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/view_profile', methods=['GET'])\r\ndef view_profile():\r\n    user_id = request.args.get('user_id')\r\n    with open(f\"\/home\/users\/{user_id}.json\", \"r\") as f:\r\n        profile = f.read()\r\n    return jsonify({\"profile\": profile})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    },
+    {
+        "challengeID":1,
+        "category":"Broken Access Control",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/update_role', methods=['POST'])\r\ndef update_role():\r\n    user_id = request.form['user_id']\r\n    new_role = request.form['role']\r\n    # Update the role in the database\r\n    update_user_role(user_id, new_role)\r\n    return jsonify({\"message\": \"Role updated successfully\"})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"9"
+    },
+    {
+        "challengeID":2,
+        "category":"Cryptographic Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/encrypt', methods=['POST'])\r\ndef encrypt():\r\n    data = request.form['data']\r\n    encrypted_data = data.encode('utf-8').hex()\r\n    return jsonify({\"encrypted_data\": encrypted_data})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    },
+    {
+        "challengeID":3,
+        "category":"Cryptographic Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport hashlib\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/hash_password', methods=['POST'])\r\ndef hash_password():\r\n    password = request.form['password']\r\n    hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()\r\n    return jsonify({\"hashed_password\": hashed_password})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"10"
+    },
+    {
+        "challengeID":4,
+        "category":"Injection",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport sqlite3\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/get_product', methods=['GET'])\r\ndef get_product():\r\n    product_id = request.args.get('product_id')\r\n    conn = sqlite3.connect('example.db')\r\n    cursor = conn.cursor()\r\n    query = f\"SELECT * FROM products WHERE id = {product_id}\"\r\n    cursor.execute(query)\r\n    result = cursor.fetchone()\r\n    conn.close()\r\n    return jsonify(result)\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"10"
+    },
+    {
+        "challengeID":5,
+        "category":"Injection",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport mysql.connector\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/get_order', methods=['GET'])\r\ndef get_order():\r\n    order_id = request.args.get('order_id')\r\n    conn = mysql.connector.connect(user='root', password='password', host='localhost', database='shop')\r\n    cursor = conn.cursor()\r\n    query = f\"SELECT * FROM orders WHERE id = {order_id}\"\r\n    cursor.execute(query)\r\n    result = cursor.fetchone()\r\n    conn.close()\r\n    return jsonify(result)\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"11"
+    },
+    {
+        "challengeID":6,
+        "category":"Insecure Design",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\nusers = []\r\n\r\n@app.route('\/register', methods=['POST'])\r\ndef register():\r\n    user_data = request.json\r\n    users.append(user_data)\r\n    return jsonify({\"message\": \"User registered successfully\"})\r\n\r\n@app.route('\/login', methods=['POST'])\r\ndef login():\r\n    login_data = request.json\r\n    for user in users:\r\n        if user['username'] == login_data['username'] and user['password'] == login_data['password']:\r\n            return jsonify({\"message\": \"Login successful\"})\r\n    return jsonify({\"error\": \"Invalid username or password\"}), 401\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"10"
+    },
+    {
+        "challengeID":7,
+        "category":"Insecure Design",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/update_profile', methods=['POST'])\r\ndef update_profile():\r\n    user_data = request.json\r\n    # No authentication check\r\n    return jsonify({\"message\": \"Profile updated successfully\"})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"7"
+    },
+    {
+        "challengeID":8,
+        "category":"Security Misconfiguration",
+        "text":"\r\nfrom flask import Flask\r\n\r\napp = Flask(__name__)\r\n\r\napp.config['DEBUG'] = True\r\n\r\n@app.route('\/')\r\ndef index():\r\n    return \"Hello, World!\"\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"4"
+    },
+    {
+        "challengeID":9,
+        "category":"Security Misconfiguration",
+        "text":"\r\nfrom flask import Flask\r\n\r\napp = Flask(__name__)\r\n\r\napp.config['SECRET_KEY'] = 'hardcoded_secret_key'\r\n\r\n@app.route('\/')\r\ndef index():\r\n    return \"Hello, World!\"\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"4"
+    },
+    {
+        "challengeID":10,
+        "category":"Security Misconfiguration",
+        "text":"\r\nfrom flask import Flask\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/')\r\ndef index():\r\n    return \"Hello, World!\"\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    },
+    {
+        "challengeID":11,
+        "category":"Vulnerable and Outdates Components",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport requests\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/proxy', methods=['POST'])\r\ndef proxy_request():\r\n    data = request.json\r\n    response = requests.post(\"http:\/\/example.com\/api\", json=data)\r\n    return jsonify(response.json())\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"4"
+    },
+    {
+        "challengeID":12,
+        "category":"Vulnerable and Outdates Components",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport jwt\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/token', methods=['POST'])\r\ndef generate_token():\r\n    user_data = request.json\r\n    token = jwt.encode(user_data, \"secret\", algorithm=\"HS256\")\r\n    return jsonify({\"token\": token})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"4"
+    },
+    {
+        "challengeID":13,
+        "category":"Vulnerable and Outdates Components",
+        "text":"\r\nfrom flask import Flask\r\nimport yaml\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/config', methods=['POST'])\r\ndef load_config():\r\n    config_data = request.data\r\n    config = yaml.safe_load(config_data)\r\n    return str(config)\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"4"
+    },
+    {
+        "challengeID":14,
+        "category":"Identification and Authentication Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\nusers = [\r\n    {\"username\": \"user1\", \"password\": \"password1\"},\r\n    {\"username\": \"user2\", \"password\": \"password2\"}\r\n]\r\n\r\n@app.route('\/login', methods=['POST'])\r\ndef login():\r\n    login_data = request.json\r\n    for user in users:\r\n        if user['username'] == login_data['username'] and user['password'] == login_data['password']:\r\n            return jsonify({\"message\": \"Login successful\"})\r\n    return jsonify({\"error\": \"Invalid username or password\"}), 401\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"5"
+    },
+    {
+        "challengeID":15,
+        "category":"Identification and Authentication Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\nusers = [\r\n    {\"username\": \"admin\", \"password\": \"admin\"},\r\n    {\"username\": \"guest\", \"password\": \"guest\"}\r\n]\r\n\r\n@app.route('\/admin', methods=['POST'])\r\ndef admin_login():\r\n    login_data = request.json\r\n    for user in users:\r\n        if user['username'] == login_data['username'] and user['password'] == login_data['password']:\r\n            return jsonify({\"message\": \"Welcome, admin!\"})\r\n    return jsonify({\"error\": \"Invalid credentials\"}), 401\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"5"
+    },
+    {
+        "challengeID":16,
+        "category":"Identification and Authentication Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\nusers = [\r\n    {\"username\": \"admin\", \"password\": \"admin123\"},\r\n    {\"username\": \"user\", \"password\": \"user123\"}\r\n]\r\n\r\n@app.route('\/change-password', methods=['POST'])\r\ndef change_password():\r\n    data = request.json\r\n    for user in users:\r\n        if user['username'] == data['username'] and user['password'] == data['old_password']:\r\n            user['password'] = data['new_password']\r\n            return jsonify({\"message\": \"Password changed successfully\"})\r\n    return jsonify({\"error\": \"Invalid credentials\"}), 401\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"5"
+    },
+    {
+        "challengeID":17,
+        "category":"Software and Data Integrity Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport subprocess\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/run-command', methods=['POST'])\r\ndef run_command():\r\n    data = request.json\r\n    command = data['command']\r\n    result = subprocess.run(command, shell=True, capture_output=True, text=True)\r\n    return jsonify({\"output\": result.stdout})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"7"
+    },
+    {
+        "challengeID":18,
+        "category":"Software and Data Integrity Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/update-data', methods=['POST'])\r\ndef update_data():\r\n    data = request.json\r\n    with open('data.txt', 'w') as file:\r\n        file.write(data['content'])\r\n    return jsonify({\"message\": \"Data updated successfully\"})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"7"
+    },
+    {
+        "challengeID":19,
+        "category":"Software and Data Integrity Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/restore-data', methods=['POST'])\r\ndef restore_data():\r\n    data = request.json\r\n    backup_file = data['backup_file']\r\n    with open('data.txt', 'w') as file:\r\n        with open(backup_file, 'r') as backup:\r\n            file.write(backup.read())\r\n    return jsonify({\"message\": \"Data restored successfully\"})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"7"
+    },
+    {
+        "challengeID":20,
+        "category":"Security Logging and Monitoring Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/login', methods=['POST'])\r\ndef login():\r\n    data = request.json\r\n    username = data['username']\r\n    password = data['password']\r\n    if username == \"admin\" and password == \"password123\":\r\n        return jsonify({\"message\": \"Login successful\"})\r\n    else:\r\n        return jsonify({\"error\": \"Invalid credentials\"}), 401\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"12"
+    },
+    {
+        "challengeID":21,
+        "category":"Security Logging and Monitoring Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/transfer', methods=['POST'])\r\ndef transfer():\r\n    data = request.json\r\n    from_account = data['from_account']\r\n    to_account = data['to_account']\r\n    amount = data['amount']\r\n    # Assume the transfer logic here\r\n    return jsonify({\"message\": \"Transfer completed\"})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    },
+    {
+        "challengeID":22,
+        "category":"Security Logging and Monitoring Failures",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/data-access', methods=['GET'])\r\ndef data_access():\r\n    data_id = request.args.get('id')\r\n    # Assume data fetching logic here\r\n    return jsonify({\"message\": \"Data fetched successfully\"})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"6"
+    },
+    {
+        "challengeID":23,
+        "category":"Server-Side Request Forgery (SSRF)",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport requests\r\n\r\napp = Flask(__name__)\r\n\r\n@app.route('\/fetch-data', methods=['POST'])\r\ndef fetch_data():\r\n    data = request.json\r\n    url = data['url']\r\n    response = requests.get(url)\r\n    return jsonify({\"data\": response.text})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    },
+    {
+        "challengeID":24,
+        "category":"Server-Side Request Forgery (SSRF)",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport requests\r\n\r\napp = Flask.__name__\r\n\r\n@app.route('\/proxy', methods=['POST'])\r\ndef proxy():\r\n    data = request.json\r\n    url = data['url']\r\n    response = requests.get(url)\r\n    return jsonify({\"data\": response.text})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    },
+    {
+        "challengeID":25,
+        "category":"Server-Side Request Forgery (SSRF)",
+        "text":"\r\nfrom flask import Flask, request, jsonify\r\nimport requests\r\n\r\napp = Flask.__name__\r\n\r\n@app.route('\/fetch-content', methods=['POST'])\r\ndef fetch_content():\r\n    data = request.json\r\n    url = data['url']\r\n    response = requests.get(url)\r\n    return jsonify({\"content\": response.text})\r\n\r\nif __name__ == '__main__':\r\n    app.run()\r\n",
+        "problematic_row":"8"
+    }
+]

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Quiz</title>
+    <link rel="stylesheet" href='static\website1.css'>
+</head>
+<body>
+    <!-- Question 2: Cryptographic Failure -->
+    <div class="question" id="question2" style="display: none;">
+        <h2>2. Cryptographic Failure</h2>
+        <div class="box" id="code-box2">
+            <h3>Identify the error in the code:</h3>
+            <pre>
+<code>
+<label><input type="radio" name="error-line2" value="1">1. const cipher = crypto.createCipher('aes192', 'a_password');</label>
+<label><input type="radio" name="error-line2" value="2">2. let encrypted = cipher.update('some clear text data', 'utf8', 'hex');</label>
+<label><input type="radio" name="error-line2" value="3">3. encrypted += cipher.final('hex');</label>
+<label><input type="radio" name="error-line2" value="4">4. console.log(encrypted);</label>
+</code>
+            </pre>
+            <button onclick="detectError('question2')" style="width: 80px; height: 20px;">Submit</button>
+        </div>
+        <div id="answer-box2" class="answer-box">
+            <div class="left-section">
+                <h2>The incorrect code line is:</h2>
+                <p>This line is the incorrect one for question 2</p>
+            </div>
+            <div class="right-section">
+                <h2>Choose the best correction:</h2>
+                <div class="Correction_options">
+                    <button onclick="openTextBox('2', '1')">1</button>
+                    <button onclick="openTextBox('2', '2')">2</button>
+                    <button onclick="openTextBox('2', '3')">3</button>
+                    <button onclick="openTextBox('2', '4')">4</button>
+                </div>
+                <div id="answerText2"></div>
+                <br><br>
+                <button onclick="nextQuestion()" style="width: 80px; height: 20px;">Submit</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

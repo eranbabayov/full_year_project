@@ -1,0 +1,433 @@
+challangeID,category,text,problematic_row
+0,Broken Access Control,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/view_profile', methods=['GET'])
+def view_profile():
+    user_id = request.args.get('user_id')
+    with open(f""/home/users/{user_id}.json"", ""r"") as f:
+        profile = f.read()
+    return jsonify({""profile"": profile})
+
+if __name__ == '__main__':
+    app.run()
+",8
+1,Broken Access Control,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/update_role', methods=['POST'])
+def update_role():
+    user_id = request.form['user_id']
+    new_role = request.form['role']
+    # Update the role in the database
+    update_user_role(user_id, new_role)
+    return jsonify({""message"": ""Role updated successfully""})
+
+if __name__ == '__main__':
+    app.run()
+",9
+2,Cryptographic Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/encrypt', methods=['POST'])
+def encrypt():
+    data = request.form['data']
+    encrypted_data = data.encode('utf-8').hex()
+    return jsonify({""encrypted_data"": encrypted_data})
+
+if __name__ == '__main__':
+    app.run()
+",8
+3,Cryptographic Failures,"
+from flask import Flask, request, jsonify
+import hashlib
+
+app = Flask(__name__)
+
+@app.route('/hash_password', methods=['POST'])
+def hash_password():
+    password = request.form['password']
+    hashed_password = hashlib.md5(password.encode('utf-8')).hexdigest()
+    return jsonify({""hashed_password"": hashed_password})
+
+if __name__ == '__main__':
+    app.run()
+",10
+4,Injection,"
+from flask import Flask, request, jsonify
+import sqlite3
+
+app = Flask(__name__)
+
+@app.route('/get_product', methods=['GET'])
+def get_product():
+    product_id = request.args.get('product_id')
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    query = f""SELECT * FROM products WHERE id = {product_id}""
+    cursor.execute(query)
+    result = cursor.fetchone()
+    conn.close()
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run()
+",10
+5,Injection,"
+from flask import Flask, request, jsonify
+import mysql.connector
+
+app = Flask(__name__)
+
+@app.route('/get_order', methods=['GET'])
+def get_order():
+    order_id = request.args.get('order_id')
+    conn = mysql.connector.connect(user='root', password='password', host='localhost', database='shop')
+    cursor = conn.cursor()
+    query = f""SELECT * FROM orders WHERE id = {order_id}""
+    cursor.execute(query)
+    result = cursor.fetchone()
+    conn.close()
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run()
+",11
+6,Insecure Design,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = []
+
+@app.route('/register', methods=['POST'])
+def register():
+    user_data = request.json
+    users.append(user_data)
+    return jsonify({""message"": ""User registered successfully""})
+
+@app.route('/login', methods=['POST'])
+def login():
+    login_data = request.json
+    for user in users:
+        if user['username'] == login_data['username'] and user['password'] == login_data['password']:
+            return jsonify({""message"": ""Login successful""})
+    return jsonify({""error"": ""Invalid username or password""}), 401
+
+if __name__ == '__main__':
+    app.run()
+",10
+7,Insecure Design,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    user_data = request.json
+    # No authentication check
+    return jsonify({""message"": ""Profile updated successfully""})
+
+if __name__ == '__main__':
+    app.run()
+",7
+8,Security Misconfiguration,"
+from flask import Flask
+
+app = Flask(__name__)
+
+app.config['DEBUG'] = True
+
+@app.route('/')
+def index():
+    return ""Hello, World!""
+
+if __name__ == '__main__':
+    app.run()
+",4
+9,Security Misconfiguration,"
+from flask import Flask
+
+app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'hardcoded_secret_key'
+
+@app.route('/')
+def index():
+    return ""Hello, World!""
+
+if __name__ == '__main__':
+    app.run()
+",4
+10,Security Misconfiguration,"
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return ""Hello, World!""
+
+if __name__ == '__main__':
+    app.run()
+",8
+11,Vulnerable and Outdates Components,"
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+@app.route('/proxy', methods=['POST'])
+def proxy_request():
+    data = request.json
+    response = requests.post(""http://example.com/api"", json=data)
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",4
+12,Vulnerable and Outdates Components,"
+from flask import Flask, request, jsonify
+import jwt
+
+app = Flask(__name__)
+
+@app.route('/token', methods=['POST'])
+def generate_token():
+    user_data = request.json
+    token = jwt.encode(user_data, ""secret"", algorithm=""HS256"")
+    return jsonify({""token"": token})
+
+if __name__ == '__main__':
+    app.run()
+",4
+13,Vulnerable and Outdates Components,"
+from flask import Flask
+import yaml
+
+app = Flask(__name__)
+
+@app.route('/config', methods=['POST'])
+def load_config():
+    config_data = request.data
+    config = yaml.safe_load(config_data)
+    return str(config)
+
+if __name__ == '__main__':
+    app.run()
+",4
+14,Identification and Authentication Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = [
+    {""username"": ""user1"", ""password"": ""password1""},
+    {""username"": ""user2"", ""password"": ""password2""}
+]
+
+@app.route('/login', methods=['POST'])
+def login():
+    login_data = request.json
+    for user in users:
+        if user['username'] == login_data['username'] and user['password'] == login_data['password']:
+            return jsonify({""message"": ""Login successful""})
+    return jsonify({""error"": ""Invalid username or password""}), 401
+
+if __name__ == '__main__':
+    app.run()
+",5
+15,Identification and Authentication Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = [
+    {""username"": ""admin"", ""password"": ""admin""},
+    {""username"": ""guest"", ""password"": ""guest""}
+]
+
+@app.route('/admin', methods=['POST'])
+def admin_login():
+    login_data = request.json
+    for user in users:
+        if user['username'] == login_data['username'] and user['password'] == login_data['password']:
+            return jsonify({""message"": ""Welcome, admin!""})
+    return jsonify({""error"": ""Invalid credentials""}), 401
+
+if __name__ == '__main__':
+    app.run()
+",5
+16,Identification and Authentication Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = [
+    {""username"": ""admin"", ""password"": ""admin123""},
+    {""username"": ""user"", ""password"": ""user123""}
+]
+
+@app.route('/change-password', methods=['POST'])
+def change_password():
+    data = request.json
+    for user in users:
+        if user['username'] == data['username'] and user['password'] == data['old_password']:
+            user['password'] = data['new_password']
+            return jsonify({""message"": ""Password changed successfully""})
+    return jsonify({""error"": ""Invalid credentials""}), 401
+
+if __name__ == '__main__':
+    app.run()
+",5
+17,Software and Data Integrity Failures,"
+from flask import Flask, request, jsonify
+import subprocess
+
+app = Flask(__name__)
+
+@app.route('/run-command', methods=['POST'])
+def run_command():
+    data = request.json
+    command = data['command']
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return jsonify({""output"": result.stdout})
+
+if __name__ == '__main__':
+    app.run()
+",7
+18,Software and Data Integrity Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/update-data', methods=['POST'])
+def update_data():
+    data = request.json
+    with open('data.txt', 'w') as file:
+        file.write(data['content'])
+    return jsonify({""message"": ""Data updated successfully""})
+
+if __name__ == '__main__':
+    app.run()
+",7
+19,Software and Data Integrity Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/restore-data', methods=['POST'])
+def restore_data():
+    data = request.json
+    backup_file = data['backup_file']
+    with open('data.txt', 'w') as file:
+        with open(backup_file, 'r') as backup:
+            file.write(backup.read())
+    return jsonify({""message"": ""Data restored successfully""})
+
+if __name__ == '__main__':
+    app.run()
+",7
+20,Security Logging and Monitoring Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data['username']
+    password = data['password']
+    if username == ""admin"" and password == ""password123"":
+        return jsonify({""message"": ""Login successful""})
+    else:
+        return jsonify({""error"": ""Invalid credentials""}), 401
+
+if __name__ == '__main__':
+    app.run()
+",12
+21,Security Logging and Monitoring Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.json
+    from_account = data['from_account']
+    to_account = data['to_account']
+    amount = data['amount']
+    # Assume the transfer logic here
+    return jsonify({""message"": ""Transfer completed""})
+
+if __name__ == '__main__':
+    app.run()
+",8
+22,Security Logging and Monitoring Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/data-access', methods=['GET'])
+def data_access():
+    data_id = request.args.get('id')
+    # Assume data fetching logic here
+    return jsonify({""message"": ""Data fetched successfully""})
+
+if __name__ == '__main__':
+    app.run()
+",6
+23,Server-Side Request Forgery (SSRF),"
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask(__name__)
+
+@app.route('/fetch-data', methods=['POST'])
+def fetch_data():
+    data = request.json
+    url = data['url']
+    response = requests.get(url)
+    return jsonify({""data"": response.text})
+
+if __name__ == '__main__':
+    app.run()
+",8
+24,Server-Side Request Forgery (SSRF),"
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask.__name__
+
+@app.route('/proxy', methods=['POST'])
+def proxy():
+    data = request.json
+    url = data['url']
+    response = requests.get(url)
+    return jsonify({""data"": response.text})
+
+if __name__ == '__main__':
+    app.run()
+",8
+25,Server-Side Request Forgery (SSRF),"
+from flask import Flask, request, jsonify
+import requests
+
+app = Flask.__name__
+
+@app.route('/fetch-content', methods=['POST'])
+def fetch_content():
+    data = request.json
+    url = data['url']
+    response = requests.get(url)
+    return jsonify({""content"": response.text})
+
+if __name__ == '__main__':
+    app.run()
+",8

@@ -21,7 +21,7 @@ CREATE TABLE user_info (
 GO
 
 CREATE TABLE challenges (
-    challengeID INT IDENTITY(1,1) PRIMARY KEY,
+    challengeID INT PRIMARY KEY,
     category VARCHAR(50),
     text VARCHAR(5000),
     problematic_row VARCHAR(50)
