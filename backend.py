@@ -233,6 +233,7 @@ def set_new_pwd():
 
     return render_template('set_new_pwd.html', emailReset=request.args.get('emailReset'))
 
+
 @app.route("/password_reset_token", methods=["GET", "POST"])
 def password_reset_token():
     if request.method == "POST":
@@ -280,16 +281,6 @@ def password_reset():
             return redirect(url_for('password_reset'))
     else:
         return render_template('password_reset.html')
-
-
-@app.route('/search_client_data', methods=['POST'])
-def search_client_data():
-    client_first_name = request.form.get('first_name')
-    client_last_name = request.form.get('last_name')
-    client_data = get_client_data_by_name(client_first_name, client_last_name)
-    if client_data:
-        return redirect(url_for('dashboard', client_data=client_data))
-    return redirect(url_for('dashboard', client_data=False))
 
 
 if __name__ == '__main__':

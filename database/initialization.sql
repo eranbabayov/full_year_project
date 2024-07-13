@@ -20,20 +20,22 @@ CREATE TABLE user_info (
 );
 GO
 
-CREATE TABLE challenges (
-    challengeID INT PRIMARY KEY,
-    category VARCHAR(50),
-    text VARCHAR(5000),
-    problematic_row VARCHAR(50)
-);
-GO
 
-CREATE TABLE solutions (
-    solutionID INT IDENTITY(1,1) PRIMARY KEY,
-    challengeID VARCHAR(50) UNIQUE,
-    text VARCHAR(5000),
-    problematic_row VARCHAR(50)
-);
+CREATE TABLE Challenges (
+    challengeID INT,
+    category NVARCHAR(255),
+    text NVARCHAR(MAX),
+    problematic_row NVARCHAR(255),
+    explanation NVARCHAR(MAX),
+)
+GO
+CREATE TABLE Solutions (
+    solutionID INT,
+    challengeID INT,
+    text NVARCHAR(MAX),
+    correctness NVARCHAR(255),
+    explanation NVARCHAR(MAX),
+)
 GO
 
 CREATE TABLE user_scores (

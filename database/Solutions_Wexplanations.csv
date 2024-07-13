@@ -1,0 +1,2478 @@
+solutionID,challengeID,text,correctness,explanation
+,,,,
+0,0,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/admin', methods=['GET'])
+def admin_panel():
+    username = request.args.get('username')
+    if username not in users:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid user!""})
+    
+    if users[username]['role'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Welcome to the admin panel!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Properly checks for valid users before checking roles to ensure access control.
+,,,,
+1,0,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/admin', methods=['GET'])
+def admin_panel():
+    username = request.args.get('username')
+    if username not in users:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid user!""})
+    
+    # Attempt to add logging
+    if users[username]['role'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Welcome to the admin panel!""})
+    else:
+        print(f""Unauthorized access attempt by {username}"")
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Adds logging but does not prevent access based on client-side data validation.
+,,,,
+2,0,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/admin', methods=['GET'])
+def admin_panel():
+    username = request.args.get('username')
+    if users[username]['role'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Welcome to the admin panel!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Additional function to print roles
+def print_roles():
+    for user, info in users.items():
+        print(f""User: {user}, Role: {info['role']}"")
+
+print_roles()
+",not_correct,Directly relies on client-side data for access control and adds a function unrelated to access control.
+,,,,
+3,0,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/admin', methods=['GET'])
+def admin_panel():
+    username = request.args.get('username')
+    if users[username]['role'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Welcome to the admin panel!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Additional functionality for logging
+def log_access(username):
+    print(f""User {username} accessed the admin panel"")
+
+log_access('admin')
+",not_correct,Adds logging functionality but does not address the core access control vulnerability.
+,,,,
+4,1,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/user/<username>', methods=['GET'])
+def user_info(username):
+    if 'admin' in request.headers.get('Roles', '').split(','):
+        return jsonify(users[username])
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Checks roles from headers instead of client-provided data.
+,,,,
+5,1,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/user/<username>', methods=['GET'])
+def user_info(username):
+    if request.args.get('role') == 'admin':
+        return jsonify(users[username])
+    else:
+        print(f""Unauthorized access attempt to {username} info"")
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Adds logging for unauthorized attempts but still relies on client-provided data for access control.
+,,,,
+6,1,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/user/<username>', methods=['GET'])
+def user_info(username):
+    if request.args.get('role') == 'admin':
+        return jsonify(users[username])
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to fetch all usernames
+def get_all_usernames():
+    return list(users.keys())
+
+print(get_all_usernames())
+",not_correct,Adds unrelated function and still relies on client-provided data for access control.
+,,,,
+7,1,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/user/<username>', methods=['GET'])
+def user_info(username):
+    if request.args.get('role') == 'admin':
+        return jsonify(users[username])
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Additional functionality for role assignment
+def assign_role(username, role):
+    users[username]['role'] = role
+
+assign_role('user1', 'admin')
+print(users)
+",not_correct,Adds unrelated role assignment function and still relies on client-provided data for access control.
+,,,,
+8,2,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    username = request.json.get('username')
+    if 'admin' in request.headers.get('Roles', '').split(','):
+        if username in users:
+            del users[username]
+            return jsonify({""status"": ""success"", ""message"": ""User deleted!""})
+        else:
+            return jsonify({""status"": ""error"", ""message"": ""User not found!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Uses header roles to validate deletion requests.
+,,,,
+9,2,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    username = request.json.get('username')
+    role = request.json.get('role')
+    if role == 'admin':
+        if username in users:
+            del users[username]
+            return jsonify({""status"": ""success"", ""message"": ""User deleted!""})
+        else:
+            return jsonify({""status"": ""error"", ""message"": ""User not found!""})
+    else:
+        print(f""Unauthorized deletion attempt by {username}"")
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Adds logging for unauthorized attempts but still relies on client-provided data for access control.
+,,,,
+10,2,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    username = request.json.get('username')
+    role = request.json.get('role')
+    if role == 'admin':
+        del users[username]
+        return jsonify({""status"": ""success"", ""message"": ""User deleted!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to log deletion attempts
+def log_deletion(username):
+    print(f""Attempt to delete user: {username}"")
+
+log_deletion('user1')
+",not_correct,Adds unrelated logging function and still relies on client-provided data for access control.
+,,,,
+11,2,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    username = request.json.get('username')
+    role = request.json.get('role')
+    if role == 'admin':
+        del users[username]
+        return jsonify({""status"": ""success"", ""message"": ""User deleted!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to count remaining users
+def count_users():
+    return len(users)
+
+print(count_users())
+",not_correct,Adds unrelated counting function and still relies on client-provided data for access control.
+,,,,
+12,3,"
+import hashlib
+import bcrypt
+
+def store_password(password):
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    with open('passwords.txt', 'a') as f:
+        f.write(f""{hashed_password.decode()}\n"")
+
+password = 'secret_password'
+store_password(password)
+",correct,Uses a strong hashing algorithm (bcrypt) with a salt.
+,,,,
+13,3,"
+import hashlib
+
+def store_password(password):
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    with open('passwords.txt', 'a') as f:
+        f.write(f""{hashed_password}\n"")
+
+password = 'secret_password'
+store_password(password)
+",half_correct,"Uses SHA-256, which is stronger than MD5 but still lacks salting and key stretching."
+,,,,
+14,3,"
+import hashlib
+
+def store_password(password):
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
+    with open('passwords.txt', 'a') as f:
+        f.write(f""{hashed_password}\n"")
+
+password = 'secret_password'
+store_password(password)
+
+# Additional logging of hashed passwords
+def log_password(hashed_password):
+    print(f""Stored hashed password: {hashed_password}"")
+
+log_password(hashlib.md5(password.encode()).hexdigest())
+",not_correct,Still uses MD5 and adds logging of hashed passwords.
+,,,,
+15,3,"
+import hashlib
+
+def store_password(password):
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
+    with open('passwords.txt', 'a') as f:
+        f.write(f""{hashed_password}\n"")
+
+password = 'secret_password'
+store_password(password)
+
+# Additional encryption method
+def encrypt_password(password):
+    return hashlib.md5(password.encode()).hexdigest()
+
+encrypted_password = encrypt_password(password)
+print(f""Encrypted password: {encrypted_password}"")
+",not_correct,Still uses MD5 and adds an unnecessary encryption method.
+,,,,
+16,4,"
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+
+def encrypt_message(message, key):
+    cipher = AES.new(key, AES.MODE_CBC)
+    encrypted_message = cipher.encrypt(pad(message, AES.block_size))
+    return cipher.iv + encrypted_message
+
+key = b'32byteslongencryptionkey12345678'  # Strong key
+message = b'secret_msg'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+",correct,Uses a strong encryption algorithm (AES) with padding and a secure key.
+,,,,
+17,4,"
+from Crypto.Cipher import AES
+
+def encrypt_message(message, key):
+    cipher = AES.new(key, AES.MODE_ECB)
+    encrypted_message = cipher.encrypt(message.ljust(16))
+    return encrypted_message
+
+key = b'32byteslongencryptionkey12345678'  # Strong key
+message = b'secret_msg'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+",half_correct,Uses AES but in ECB mode which is less secure than CBC mode.
+,,,,
+18,4,"
+from Crypto.Cipher import DES
+
+def encrypt_message(message, key):
+    cipher = DES.new(key, DES.MODE_ECB)
+    encrypted_message = cipher.encrypt(message.ljust(16))
+    return encrypted_message
+
+key = b'12345678'  # Weak key
+message = b'secret_msg'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+
+# Additional logging function
+def log_encryption(message, encrypted_message):
+    print(f""Original: {message}, Encrypted: {encrypted_message}"")
+
+log_encryption(message, encrypted_message)
+",not_correct,Still uses DES and adds logging of encryption.
+,,,,
+19,4,"
+from Crypto.Cipher import DES
+
+def encrypt_message(message, key):
+    cipher = DES.new(key, DES.MODE_ECB)
+    encrypted_message = cipher.encrypt(message.ljust(16))
+    return encrypted_message
+
+key = b'12345678'  # Weak key
+message = b'secret_msg'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+
+# Function to decrypt message
+def decrypt_message(encrypted_message, key):
+    cipher = DES.new(key, DES.MODE_ECB)
+    decrypted_message = cipher.decrypt(encrypted_message).strip()
+    return decrypted_message
+
+decrypted_message = decrypt_message(encrypted_message, key)
+print(decrypted_message)
+",not_correct,Still uses DES and adds unnecessary decryption function.
+,,,,
+20,5,"
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+import base64
+
+def encrypt_message(message, key):
+    cipher = AES.new(key, AES.MODE_CBC)
+    encrypted_message = cipher.encrypt(pad(message.encode(), AES.block_size))
+    return base64.b64encode(cipher.iv + encrypted_message)
+
+key = b'32byteslongencryptionkey12345678'  # Strong key
+message = 'sensitive_data'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+",correct,Uses AES encryption with padding and Base64 encoding for secure handling.
+,,,,
+21,5,"
+from Crypto.Cipher import AES
+import base64
+
+def encrypt_message(message, key):
+    cipher = AES.new(key, AES.MODE_ECB)
+    encrypted_message = cipher.encrypt(message.ljust(16).encode())
+    return base64.b64encode(encrypted_message)
+
+key = b'32byteslongencryptionkey12345678'  # Strong key
+message = 'sensitive_data'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+",half_correct,Uses AES encryption but in ECB mode.
+,,,,
+22,5,"
+import base64
+
+def encode_message(message):
+    encoded_message = base64.b64encode(message.encode())
+    return encoded_message
+
+message = 'sensitive_data'
+encoded_message = encode_message(message)
+print(encoded_message)
+
+# Additional decoding function
+def decode_message(encoded_message):
+    return base64.b64decode(encoded_message).decode()
+
+decoded_message = decode_message(encoded_message)
+print(decoded_message)
+",not_correct,Still uses Base64 encoding and adds unnecessary decoding function.
+,,,,
+23,5,"
+import base64
+
+def encode_message(message):
+    encoded_message = base64.b64encode(message.encode())
+    return encoded_message
+
+message = 'sensitive_data'
+encoded_message = encode_message(message)
+print(encoded_message)
+
+# Additional function for logging
+def log_message(message, encoded_message):
+    print(f""Original: {message}, Encoded: {encoded_message}"")
+
+log_message(message, encoded_message)
+",not_correct,Still uses Base64 encoding and adds logging of messages.
+,,,,
+24,6,"
+import sqlite3
+
+def get_user_details(username):
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    cursor.execute(""SELECT * FROM users WHERE username = ?"", (username,))
+    user_details = cursor.fetchone()
+    conn.close()
+    return user_details
+
+username = 'admin'
+print(get_user_details(username))
+",correct,Uses parameterized queries to prevent SQL injection.
+,,,,
+25,6,"
+import sqlite3
+
+def get_user_details(username):
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    query = f""SELECT * FROM users WHERE username = '{username}'""
+    print(query)  # Adding logging for debug
+    cursor.execute(query)
+    user_details = cursor.fetchone()
+    conn.close()
+    return user_details
+
+username = 'admin'
+print(get_user_details(username))
+",half_correct,Adds logging but does not prevent SQL injection.
+,,,,
+26,6,"
+import sqlite3
+
+def get_user_details(username):
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    cursor.execute(f""SELECT * FROM users WHERE username = '{username}'"")
+    user_details = cursor.fetchone()
+    conn.close()
+    return user_details
+
+username = 'admin'
+print(get_user_details(username))
+
+# Additional function for logging
+def log_query(query):
+    print(f""Executed query: {query}"")
+
+log_query(f""SELECT * FROM users WHERE username = '{username}'"")
+",not_correct,Still vulnerable to SQL injection and adds logging.
+,,,,
+27,6,"
+import sqlite3
+
+def get_user_details(username):
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    cursor.execute(f""SELECT * FROM users WHERE username = '{username}'"")
+    user_details = cursor.fetchone()
+    conn.close()
+    return user_details
+
+username = 'admin'
+print(get_user_details(username))
+
+# Additional function to count users
+def count_users():
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    cursor.execute(""SELECT COUNT(*) FROM users"")
+    user_count = cursor.fetchone()[0]
+    conn.close()
+    return user_count
+
+print(count_users())
+",not_correct,Still vulnerable to SQL injection and adds an unrelated function.
+,,,,
+28,7,"
+from flask import Flask, request
+import subprocess
+
+app = Flask(__name__)
+
+@app.route('/execute', methods=['POST'])
+def execute_command():
+    command = request.form['command']
+    result = subprocess.run(['sh', '-c', command], capture_output=True, text=True)
+    return result.stdout
+
+if __name__ == '__main__':
+    app.run()
+",correct,Uses subprocess module with limited shell access to prevent command injection.
+,,,,
+29,7,"
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+@app.route('/execute', methods=['POST'])
+def execute_command():
+    command = request.form['command']
+    os.system(command)
+    return 'Command executed'
+
+if __name__ == '__main__':
+    app.run()
+
+# Logging function for executed commands
+def log_command(command):
+    print(f""Executed command: {command}"")
+
+log_command(request.form['command'])
+",half_correct,Adds logging but does not prevent command injection.
+,,,,
+30,7,"
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+@app.route('/execute', methods=['POST'])
+def execute_command():
+    command = request.form['command']
+    os.system(command)
+    return 'Command executed'
+
+if __name__ == '__main__':
+    app.run()
+
+# Additional function to list directory contents
+def list_directory():
+    os.system('ls')
+
+list_directory()
+",not_correct,Still vulnerable to command injection and adds an unrelated function.
+,,,,
+31,7,"
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+@app.route('/execute', methods=['POST'])
+def execute_command():
+    command = request.form['command']
+    os.system(command)
+    return 'Command executed'
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to change directory
+def change_directory(path):
+    os.chdir(path)
+
+change_directory('/tmp')
+",not_correct,Still vulnerable to command injection and adds an unrelated function.
+,,,,
+32,8,"
+import json
+import sqlite3
+
+def process_json(input_json):
+    data = json.loads(input_json)
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    cursor.execute(""SELECT * FROM users WHERE id = ?"", (data['user_id'],))
+    user_details = cursor.fetchone()
+    conn.close()
+    return user_details
+
+input_json = '{""user_id"": 1}'
+print(process_json(input_json))
+",correct,Uses parameterized queries to prevent SQL injection.
+,,,,
+33,8,"
+import json
+
+def process_json(input_json):
+    data = json.loads(input_json)
+    query = f""SELECT * FROM users WHERE id = {data['user_id']}""
+    print(query)  # Adding logging for debug
+    return query
+
+input_json = '{""user_id"": ""1 OR 1=1""}'
+process_json(input_json)
+",half_correct,Adds logging but does not prevent SQL injection.
+,,,,
+34,8,"
+import json
+
+def process_json(input_json):
+    data = json.loads(input_json)
+    query = f""SELECT * FROM users WHERE id = {data['user_id']}""
+    print(query)
+
+
+    return query
+
+input_json = '{""user_id"": ""1 OR 1=1""}'
+process_json(input_json)
+
+# Additional function for logging
+def log_query(query):
+    print(f""Executed query: {query}"")
+
+log_query(f""SELECT * FROM users WHERE id = {data['user_id']}"")
+",not_correct,Still vulnerable to SQL injection and adds logging.
+,,,,
+35,8,"
+import json
+
+def process_json(input_json):
+    data = json.loads(input_json)
+    query = f""SELECT * FROM users WHERE id = {data['user_id']}""
+    print(query)
+    return query
+
+input_json = '{""user_id"": ""1 OR 1=1""}'
+process_json(input_json)
+
+# Function to count users
+def count_users():
+    return len(data)
+
+print(count_users())
+",not_correct,Still vulnerable to SQL injection and adds an unrelated function.
+,,,,
+36,9,"
+from flask import Flask, request, jsonify
+import bcrypt
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    data = request.json
+    hashed_password = bcrypt.hashpw(data['password'].encode(), bcrypt.gensalt())
+    users[data['username']] = hashed_password.decode()
+    return jsonify({""status"": ""success"", ""message"": ""User added!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Stores hashed passwords instead of plaintext.
+,,,,
+37,9,"
+from flask import Flask, request, jsonify
+import hashlib
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    data = request.json
+    hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+    users[data['username']] = hashed_password
+    return jsonify({""status"": ""success"", ""message"": ""User added!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Uses SHA-256 hashing but lacks salting and key stretching.
+,,,,
+38,9,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    data = request.json
+    users[data['username']] = data['password']
+    return jsonify({""status"": ""success"", ""message"": ""User added!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Logging function for user additions
+def log_user_addition(username):
+    print(f""User added: {username}"")
+
+log_user_addition(data['username'])
+",not_correct,Still stores plaintext passwords and adds logging.
+,,,,
+39,9,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    data = request.json
+    users[data['username']] = data['password']
+    return jsonify({""status"": ""success"", ""message"": ""User added!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to list all users
+def list_users():
+    return users
+
+print(list_users())
+",not_correct,Still stores plaintext passwords and adds an unrelated function.
+,,,,
+40,10,"
+from flask import Flask, request, jsonify
+import bcrypt
+
+app = Flask(__name__)
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    hashed_password = bcrypt.hashpw(data['password'].encode(), bcrypt.gensalt())
+    with open('users.txt', 'a') as f:
+        f.write(f""{data['username']}:{hashed_password.decode()}\n"")
+    return jsonify({""status"": ""success"", ""message"": ""User registered!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Stores hashed passwords instead of plaintext.
+,,,,
+41,10,"
+from flask import Flask, request, jsonify
+import hashlib
+
+app = Flask(__name__)
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+    with open('users.txt', 'a') as f:
+        f.write(f""{data['username']}:{hashed_password}\n"")
+    return jsonify({""status"": ""success"", ""message"": ""User registered!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Uses SHA-256 hashing but lacks salting and key stretching.
+,,,,
+42,10,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    with open('users.txt', 'a') as f:
+        f.write(f""{data['username']}:{data['password']}\n"")
+    return jsonify({""status"": ""success"", ""message"": ""User registered!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Logging function for user registrations
+def log_registration(username):
+    print(f""User registered: {username}"")
+
+log_registration(data['username'])
+",not_correct,Still stores plaintext passwords and adds logging.
+,,,,
+43,10,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    with open('users.txt', 'a') as f:
+        f.write(f""{data['username']}:{data['password']}\n"")
+    return jsonify({""status"": ""success"", ""message"": ""User registered!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to list all registered users
+def list_users():
+    with open('users.txt', 'r') as f:
+        users = f.readlines()
+    return users
+
+print(list_users())
+",not_correct,Still stores plaintext passwords and adds an unrelated function.
+,,,,
+44,11,"
+from flask import Flask, request, jsonify
+import bcrypt
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and bcrypt.checkpw(data['password'].encode(), users[data['username']].encode()):
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Uses bcrypt for password verification instead of plaintext.
+,,,,
+45,11,"
+from flask import Flask, request, jsonify
+import hashlib
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+    if data['username'] in users and users[data['username']] == hashed_password:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Uses SHA-256 hashing but lacks salting and key stretching.
+,,,,
+46,11,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error
+
+"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Logging function for login attempts
+def log_login_attempt(username, status):
+    print(f""Login attempt by {username}: {status}"")
+
+log_login_attempt(data['username'], ""success"" if data['username'] in users and users[data['username']] == data['password'] else ""failure"")
+",not_correct,Still uses plaintext passwords and adds logging.
+,,,,
+47,11,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to add users
+def add_user(username, password):
+    users[username] = password
+
+add_user('admin', 'admin123')
+",not_correct,Still uses plaintext passwords and adds an unrelated function.
+,,,,
+48,12,"
+from flask import Flask, request, jsonify
+import json
+import os
+
+app = Flask(__name__)
+
+@app.route('/config', methods=['POST'])
+def config():
+    config_data = request.json
+    encrypted_data = encrypt_config(json.dumps(config_data))
+    with open('config.json', 'wb') as config_file:
+        config_file.write(encrypted_data)
+    return jsonify({""status"": ""success"", ""message"": ""Configuration saved!""})
+
+def encrypt_config(data):
+    from Crypto.Cipher import AES
+    from Crypto.Util.Padding import pad
+    key = os.urandom(32)
+    cipher = AES.new(key, AES.MODE_CBC)
+    return cipher.iv + cipher.encrypt(pad(data.encode(), AES.block_size))
+
+if __name__ == '__main__':
+    app.run()
+",correct,Encrypts configuration data before storing.
+,,,,
+49,12,"
+from flask import Flask, request, jsonify
+import json
+
+app = Flask(__name__)
+
+@app.route('/config', methods=['POST'])
+def config():
+    config_data = request.json
+    with open('config.json', 'w') as config_file:
+        config_file.write(json.dumps(config_data, indent=4))
+    return jsonify({""status"": ""success"", ""message"": ""Configuration saved!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Formats JSON but still stores plaintext.
+,,,,
+50,12,"
+from flask import Flask, request, jsonify
+import json
+
+app = Flask(__name__)
+
+@app.route('/config', methods=['POST'])
+def config():
+    config_data = request.json
+    with open('config.json', 'w') as config_file:
+        config_file.write(json.dumps(config_data))
+    return jsonify({""status"": ""success"", ""message"": ""Configuration saved!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Logging function for configuration changes
+def log_config_change(config_data):
+    print(f""Configuration changed: {config_data}"")
+
+log_config_change(config_data)
+",not_correct,Still stores plaintext configuration and adds logging.
+,,,,
+51,12,"
+from flask import Flask, request, jsonify
+import json
+
+app = Flask(__name__)
+
+@app.route('/config', methods=['POST'])
+def config():
+    config_data = request.json
+    with open('config.json', 'w') as config_file:
+        config_file.write(json.dumps(config_data))
+    return jsonify({""status"": ""success"", ""message"": ""Configuration saved!""})
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to retrieve configuration
+def get_config():
+    with open('config.json', 'r') as config_file:
+        return json.load(config_file)
+
+print(get_config())
+",not_correct,Still stores plaintext configuration and adds an unrelated function.
+,,,,
+52,13,"
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/debug')
+def debug():
+    return ""Debug mode is disabled in production.""
+
+if __name__ == '__main__':
+    app.run(debug=False)
+",correct,Disables debug mode in production.
+,,,,
+53,13,"
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/debug')
+def debug():
+    return str(app.config)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+# Logging function for configuration access
+def log_config_access():
+    print(""Configuration accessed"")
+
+log_config_access()
+",half_correct,Adds logging but keeps debug mode enabled.
+,,,,
+54,13,"
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/debug')
+def debug():
+    return str(app.config)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+# Function to list all routes
+def list_routes():
+    return app.url_map
+
+print(list_routes())
+",not_correct,Keeps debug mode enabled and adds an unrelated function.
+,,,,
+55,13,"
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/debug')
+def debug():
+    return str(app.config)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+# Added error handling route
+@app.route('/error')
+def error():
+    return ""Error handling route""
+",not_correct,Enables debug mode in production.
+,,,,
+56,14,"
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join('/uploads', filename))
+        return 'File uploaded!'
+    else:
+        return 'Invalid file type!', 400
+
+if __name__ == '__main__':
+    app.run()
+",correct,Validates file types and uses secure filenames.
+,,,,
+57,14,"
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    filename = file.filename
+    file.save(os.path.join('/uploads', filename))
+    return 'File uploaded!'
+
+if __name__ == '__main__':
+    app.run()
+
+# Logging function for file uploads
+def log_file_upload(filename):
+    print(f""File uploaded: {filename}"")
+
+log_file_upload(file.filename)
+",half_correct,Adds logging but does not validate file types.
+,,,,
+58,14,"
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    file.save(f""/uploads/{file.filename}"")
+    return 'File uploaded!'
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to list uploaded files
+def list_files():
+    import os
+    return os.listdir('/uploads')
+
+print(list_files())
+",not_correct,Keeps insecure file handling and adds an unrelated function.
+,,,,
+59,14,"
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    file.save(f""/uploads/{file.filename}"")
+    return 'File uploaded!'
+
+if __name__ == '__main__':
+    app.run()
+
+# Function to delete uploaded files
+def delete_file(filename):
+    import os
+    os.remove(f""/uploads/{filename}"")
+
+delete_file(file.filename)
+",not_correct,Keeps insecure file handling and adds an unrelated function.
+,,,,
+60,15,"
+from flask import Flask, jsonify
+import flask
+
+app = Flask(__name__)
+
+@app.route('/version', methods=['GET'])
+def get_version():
+    return jsonify({""version"": flask.__version__})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Upgrades Flask to the latest version and dynamically fetches the version number.
+,,,,
+61,15,"
+from flask import Flask, jsonify
+import flask
+
+app = Flask(__name__)
+
+@app.route('/version', methods=['GET'])
+def get_version():
+    return jsonify({""version"": ""2.0.1""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Updates to a newer version of Flask but hardcodes the version number, which may become outdated again."
+,,,,
+62,15,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/version', methods=['GET'])
+def get_version():
+    return jsonify({""version"": ""1.0.0""})
+
+@app.route('/check', methods=['GET'])
+def check_updates():
+    return jsonify({""update"": ""No updates available""})
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,Adds an endpoint to check for updates but doesn't update the Flask version.
+,,,,
+63,15,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/version', methods=['GET'])
+def get_version():
+    return jsonify({""version"": ""1.0.0""})
+
+def check_for_updates():
+    return False  # Simulates an update check that does nothing
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,Adds a function to check for updates but does not update the Flask version.
+,,,,
+64,16,"
+from flask import Flask, jsonify
+import some_critical_lib
+
+app = Flask(__name__)
+
+@app.route('/info', methods=['GET'])
+def get_info():
+    return jsonify({""app"": ""MyApp"", ""version"": some_critical_lib.__version__})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Upgrades the critical library to the latest version and dynamically fetches the version number.
+,,,,
+65,16,"
+from flask import Flask, jsonify
+import some_critical_lib
+
+app = Flask(__name__)
+
+@app.route('/info', methods=['GET'])
+def get_info():
+    return jsonify({""app"": ""MyApp"", ""version"": ""2.0.1""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Updates to a newer version of the critical library but hardcodes the version number, which may become outdated again."
+,,,,
+66,16,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/info', methods=['GET'])
+def get_info():
+    return jsonify({""app"": ""MyApp"", ""version"": ""1.0.0""})
+
+@app.route('/update_status', methods=['GET'])
+def update_status():
+    return jsonify({""status"": ""No updates available""})
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,Adds an endpoint to check for updates but doesn't update the critical library.
+,,,,
+67,16,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/info', methods=['GET'])
+def get_info():
+    return jsonify({""app"": ""MyApp"", ""version"": ""1.0.0""})
+
+def check_updates():
+    return ""No updates found""  # Simulates an update check that does nothing
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,Adds a function to check for updates but does not update the critical library.
+,,,,
+68,17,"
+from flask import Flask, jsonify
+import database_driver
+
+app = Flask(__name__)
+
+@app.route('/details', methods=['GET'])
+def get_details():
+    return jsonify({""service"": ""DataService"", ""version"": database_driver.__version__})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Upgrades the database driver to the latest version and dynamically fetches the version number.
+,,,,
+69,17,"
+from flask import Flask, jsonify
+import database_driver
+
+app = Flask(__name__)
+
+@app.route('/details', methods=['GET'])
+def get_details():
+    return jsonify({""service"": ""DataService"", ""version"": ""2.0.1""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Updates to a newer version of the database driver but hardcodes the version number, which may become outdated again."
+,,,,
+70,17,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/details', methods=['GET'])
+def get_details():
+    return jsonify({""service"": ""DataService"", ""version"": ""1.0.0""})
+
+@app.route('/update_info', methods=['GET'])
+def update_info():
+    return jsonify({""update"": ""No updates available""})
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,Adds an endpoint to check for updates but doesn't update the database driver.
+,,,,
+71,17,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/details', methods=['GET'])
+def get_details():
+    return jsonify({""service"": ""DataService"", ""version"": ""1.0.0""})
+
+def check_driver_updates():
+    return False  # Simulates an update check that does nothing
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,Adds a function to check for updates but does not update the database driver.
+,,,,
+72,18,"
+from flask import Flask, request, jsonify
+import bcrypt
+
+app = Flask(__name__)
+
+users = {'admin': bcrypt.hashpw('admin'.encode(), bcrypt.gensalt()).decode()}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and bcrypt.checkpw(data['password'].encode(), users[data['username']].encode()):
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,"Uses bcrypt to hash and verify passwords, preventing plain text password storage."
+,,,,
+73,18,"
+from flask import Flask, request, jsonify
+import hashlib
+
+app = Flask(__name__)
+
+users = {'admin': hashlib.sha256('admin'.encode()).hexdigest()}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+    if data['username'] in users and users[data['username']] == hashed_password:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Hashes passwords but lacks salting and key stretching, making it less secure than bcrypt."
+,,,,
+74,18,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {'admin': 'admin'}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def log_login_attempt(username, status):
+    print(f""Login attempt by {username}: {status}"")
+
+log_login_attempt('admin', 'success')
+",not_correct,Logs login attempts but still stores passwords in plain text.
+,,,,
+75,18,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {'admin': 'admin'}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def add_new_user(new_user, new_password):
+    users[new_user] = new_password
+
+add_new_user('user1', 'password1')
+",not_correct,Adds a new user but still stores passwords in plain text.
+,,,,
+76,19,"
+from flask import Flask, request, jsonify
+import bcrypt
+import os
+
+app = Flask(__name__)
+
+app.secret_key = os.urandom(24)
+
+users = {'admin': bcrypt.hashpw('password123'.encode(), bcrypt.gensalt()).decode()}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and bcrypt.checkpw(data['password'].encode(), users[data['username']].encode()):
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Uses a secure secret key and bcrypt for password hashing and verification.
+,,,,
+77,19,"
+from flask import Flask, request, jsonify
+import hashlib
+import os
+
+app = Flask(__name__)
+
+app.secret_key = os.urandom(24)
+
+users = {'admin': hashlib.sha256('password123'.encode()).hexdigest()}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+    if data['username'] in users and users[data['username']] == hashed_password:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,Uses a secure secret key but lacks proper password hashing practices like salting and key stretching.
+,,,,
+78,19,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+app.secret_key = 'supersecretkey'
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    users = {'admin': 'password123'}
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def log_login_attempt(username, status):
+    print(f""Login attempt by {username}: {status}"")
+
+log_login_attempt('admin', 'success')
+",not_correct,Logs login attempts but still stores passwords in plain text and uses a predictable secret key.
+,,,,
+79,19,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+app.secret_key = 'supersecretkey'
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    users = {'admin': 'password123'}
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def add_new_user(new_user, new_password):
+    users[new_user] = new_password
+
+add_new_user('user1', 'password1')
+",not_correct,Adds a new user but still stores passwords in plain text and uses a predictable secret key.
+,,,,
+80,20,"
+from flask import Flask, request, jsonify
+import bcrypt
+import time
+
+app = Flask(__name__)
+
+users = {'admin': bcrypt.hashpw('admin'.encode(), bcrypt.gensalt()).decode()}
+
+login_attempts = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data['username']
+    
+    if username in login_attempts and login_attempts[username]['count'] >= 5:
+        if time.time() - login_attempts[username]['last_attempt'] < 300:
+            return jsonify({""status"": ""error"", ""message"": ""Account locked. Try again later.""})
+        else:
+            login_attempts[username]['count'] = 0
+    
+    if username in users and bcrypt.checkpw(data['password'].encode(), users[username].encode()):
+        login_attempts[username] = {'count': 0, 'last_attempt': time.time()}
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        if username not in login_attempts:
+            login_attempts[username] = {'count': 1, 'last_attempt': time.time()}
+        else:
+            login_attempts[username]['count'] += 1
+            login_attempts[username]['last_attempt'] = time.time()
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,"Uses hashed passwords with bcrypt, includes rate limiting to prevent brute-force attacks."
+,,,,
+81,20,"
+from flask import Flask, request, jsonify
+import hashlib
+import time
+
+app = Flask(__name__)
+
+users = {'admin': hashlib.sha256('admin'.encode()).hexdigest()}
+
+login_attempts = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data['username']
+    
+    if username in login_attempts and login_attempts[username]['count'] >= 5:
+        if time.time() - login_attempts[username]['last_attempt'] < 300:
+            return jsonify({""status"": ""error"", ""message"": ""Account locked. Try again later.""})
+        else:
+            login_attempts[username]['count'] = 0
+    
+    hashed_password = hashlib.sha256(data['password'].encode()).hexdigest()
+    if username in users and users[username] == hashed_password:
+        login_attempts[username] = {'count': 0, 'last_attempt': time.time()}
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        if username not in login_attempts:
+            login_attempts[username] = {'count': 1, 'last_attempt': time.time()}
+        else:
+            login_attempts[username]['count'] += 1
+            login_attempts[username]['last_attempt'] = time.time()
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Uses hashed passwords but lacks salting and key stretching, includes rate limiting."
+,,,,
+82,20,"
+from flask import Flask, request, jsonify
+
+app = Flask()
+
+users = {'admin': 'admin'}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def send_alert_email(username):
+    print(f""Alert: Login failed for user {username}"")
+
+send_alert_email('admin')
+",not_correct,Adds a function to send alert emails but still stores passwords in plain text and lacks rate limiting.
+,,,,
+83,20,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {'admin': 'admin'}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def log_login_attempt(username, status):
+    print(f""Login attempt by {username}: {status}"")
+
+log_login_attempt('admin', 'failure')
+",not_correct,Adds logging but still stores passwords in plain text and lacks rate limiting.
+,,,,
+84,21,"
+import requests
+import hashlib
+
+def download_file(url, expected_hash):
+    response = requests.get(url)
+    file_data = response.content
+    file_hash = hashlib.sha256(file_data).hexdigest()
+    if file_hash == expected_hash:
+        with open('file.txt', 'wb') as f:
+            f.write(file_data)
+    else:
+        raise ValueError(""File integrity check failed"")
+
+url = ""http://example.com/file.txt""
+expected_hash = ""expectedhashvalue""
+download_file(url, expected_hash)
+",correct,Uses SHA-256 to verify the file's integrity before saving.
+,,,,
+85,21,"
+import requests
+import hashlib
+
+def download_file(url):
+    response = requests.get(url)
+    file_data = response.content
+    file_hash = hashlib.md5(file_data).hexdigest()  # MD5 is less secure than SHA-256
+    with open('file.txt', 'wb') as f:
+        f.write(file_data)
+
+url = ""http://example.com/file.txt""
+download_file(url)
+",half_correct,"Uses MD5, which is less secure than SHA-256 for integrity verification."
+,,,,
+86,21,"
+import requests
+
+def download_file(url):
+    response = requests.get(url)
+    with open('file.txt', 'wb') as f:
+        f.write(response.content)
+    print(""Download completed"")
+
+url = ""http://example.com/file.txt""
+download_file(url)
+",not_correct,Adds a print statement but does not verify file integrity.
+,,,,
+87,21,"
+import requests
+
+def download_file(url):
+    response = requests.get(url)
+    with open('file.txt', 'wb') as f:
+        f.write(response.content)
+
+def notify_user():
+    print(""File download finished"")
+
+url = ""http://example.com/file.txt""
+download_file(url)
+notify_user()
+",not_correct,Adds a notification function but does not verify file integrity.
+,,,,
+88,22,"
+import subprocess
+import hashlib
+
+def verify_script(file_path, expected_hash):
+    with open(file_path, 'rb') as f:
+        file_data = f.read()
+    file_hash = hashlib.sha256(file_data).hexdigest()
+    return file_hash == expected_hash
+
+def update_software():
+    subprocess.run([""wget"", ""http://example.com/update.sh"", ""-O"", ""update.sh""])
+    if verify_script(""update.sh"", ""expectedhashvalue""):
+        subprocess.run([""sh"", ""update.sh""])
+    else:
+        raise ValueError(""Script integrity check failed"")
+
+update_software()
+",correct,Verifies script integrity using SHA-256 before execution.
+,,,,
+89,22,"
+import subprocess
+import hashlib
+
+def verify_script(file_path):
+    with open(file_path, 'rb') as f:
+        file_data = f.read()
+    file_hash = hashlib.md5(file_data).hexdigest()  # MD5 is less secure than SHA-256
+    print(f""Script hash: {file_hash}"")
+
+def update_software():
+    subprocess.run([""wget"", ""http://example.com/update.sh"", ""-O"", ""update.sh""])
+    verify_script(""update.sh"")
+    subprocess.run([""sh"", ""update.sh""])
+
+update_software()
+",half_correct,Uses MD5 for integrity verification but does not actually verify against an expected hash.
+,,,,
+90,22,"
+import subprocess
+
+def update_software():
+    subprocess.run([""wget"", ""http://example.com/update.sh"", ""-O"", ""update.sh""])
+    subprocess.run([""sh"", ""update.sh""])
+
+def log_update_attempt():
+    print(""Update attempted"")
+
+update_software()
+log_update_attempt()
+",not_correct,Adds logging but does not verify script integrity.
+,,,,
+91,22,"
+import subprocess
+
+def update_software():
+    subprocess.run([""wget"", ""http://example.com/update.sh"", ""-O"", ""update.sh""])
+    subprocess.run([""sh"", ""update.sh""])
+
+def backup_script():
+    subprocess.run([""cp"", ""update.sh"", ""update_backup.sh""])
+
+update_software()
+backup_script()
+",not_correct,Adds a backup function but does not verify script integrity.
+,,,,
+92,23,"
+import json
+import requests
+import hashlib
+
+def load_config(url, expected_hash):
+    response = requests.get(url)
+    file_data = response.content
+    file_hash = hashlib.sha256(file_data).hexdigest()
+    if file_hash == expected_hash:
+        config = json.loads(file_data)
+        return config
+    else:
+        raise ValueError(""Config integrity check failed"")
+
+config = load_config(""http://example.com/config.json"", ""expectedhashvalue"")
+print(config)
+",correct,Verifies the integrity of the configuration file using SHA-256.
+,,,,
+93,23,"
+import json
+import requests
+import hashlib
+
+def load_config(url):
+    response = requests.get(url)
+    file_data = response.content
+    file_hash = hashlib.md5(file_data).hexdigest()  # MD5 is less secure than SHA-256
+    print(f""Config hash: {file_hash}"")
+    config = json.loads(file_data)
+    return config
+
+config = load_config(""http://example.com/config.json"")
+print(config)
+",half_correct,Uses MD5 for integrity verification but does not verify against an expected hash.
+,,,,
+94,23,"
+import json
+
+def load_config(file_path):
+    with open(file_path, 'r') as f:
+        config = json.load(f)
+    return config
+
+def log_config_load():
+    print(""Config loaded"")
+
+config = load_config(""http://example.com/config.json"")
+log_config_load()
+print(config)
+",not_correct,Adds logging but does not verify file integrity.
+,,,,
+95,23,"
+import json
+import requests
+
+def load_config(url):
+    response = requests.get(url)
+    file_data = response.content
+    config = json.loads(file_data)
+    return config
+
+def log_request(url):
+    print(f""Request made to: {url}"")
+
+log_request(""http://example.com/config.json"")
+config = load_config(""http://example.com/config.json"")
+print(config)
+",not_correct,Adds a logging function but does not verify file integrity.
+,,,,
+96,24,"
+from flask import Flask, request, jsonify
+import logging
+
+app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] == 'admin' and data['password'] == 'admin':
+        app.logger.info(f""Login successful for user: {data['username']}"")
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        app.logger.warning(f""Failed login attempt for user: {data['username']}"")
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Adds logging for both successful and failed login attempts.
+,,,,
+97,24,"
+from flask import Flask, request, jsonify
+import logging
+
+app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] == 'admin' and data['password'] == 'admin':
+        app.logger.info(""Login successful"")
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        app.logger.warning(""Failed login attempt"")
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Logs attempts but does not include the username, which can be important for security monitoring."
+,,,,
+98,24,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] == 'admin' and data['password'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def log_message():
+    print(""A login attempt was made"")
+",not_correct,Adds a logging function but does not log login attempts.
+,,,,
+99,24,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] == 'admin' and data['password'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+
+@app.route('/log', methods=['GET'])
+def view_log():
+    with open('app.log', 'r') as f:
+        return f.read()
+",not_correct,Adds a log viewing endpoint but does not log login attempts.
+,,,,
+100,25,"
+from flask import Flask, request, jsonify
+import logging
+
+app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.json
+    if data['amount'] > 0:
+        app.logger.info(f""Transfer successful: {data}"")
+        return jsonify({""status"": ""success"", ""message"": ""Transfer successful!""})
+    else:
+        app.logger.warning(f""Failed transfer attempt: {data}"")
+        return jsonify({""status"": ""error"", ""message"": ""Transfer failed!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Adds logging for both successful and failed transfer attempts.
+,,,,
+101,25,"
+from flask import Flask, request, jsonify
+import logging
+
+app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.json
+    if data['amount'] > 0:
+        app.logger.info(""Transfer successful"")
+        return jsonify({""status"": ""success"", ""message"": ""Transfer successful!""})
+    else:
+        app.logger.warning(""Failed transfer attempt"")
+        return jsonify({""status"": ""error"", ""message"": ""Transfer failed!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Logs attempts but does not include the transfer details, which can be important for security monitoring."
+,,,,
+102,25,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.json
+    if data['amount'] > 0:
+        return jsonify({""status"": ""success"", ""message"": ""Transfer successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Transfer failed!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def log_transfer():
+    print(""A transfer attempt was made"")
+",not_correct,Adds a logging function but does not log transfer attempts.
+,,,,
+103,25,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.json
+    if data['amount'] > 0:
+        return jsonify({""status"": ""success"", ""message"": ""Transfer successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Transfer failed!""})
+
+if __name__ == '__main__':
+    app.run()
+
+@app.route('/log', methods=['GET'])
+def view_log():
+    with open('app.log', 'r') as f:
+        return f.read()
+",not_correct,Adds a log viewing endpoint but does not log transfer attempts.
+,,,,
+104,26,"
+from flask import Flask, request, jsonify
+import logging
+
+app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    data = request.json
+    if data['username'] == 'admin':
+        app.logger.info(f""Account deletion successful for user: {data['username']}"")
+        return jsonify({""status"": ""success"", ""message"": ""Account deleted!""})
+    else:
+        app.logger.warning(f""Failed account deletion attempt for user: {data['username']}"")
+        return jsonify({""status"": ""error"", ""message"": ""Deletion failed!""})
+
+if __name__ == '__main__':
+    app.run()
+",correct,Adds logging for both successful and failed account deletion attempts.
+,,,,
+105,26,"
+from flask import Flask, request, jsonify
+import logging
+
+app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    data = request.json
+    if data['username'] == 'admin':
+        app.logger.info(""Account deletion successful"")
+        return jsonify({""status"": ""success"", ""message"": ""Account deleted!""})
+    else:
+        app.logger.warning(""Failed account deletion attempt"")
+        return jsonify({""status"": ""error"", ""message"": ""Deletion failed!""})
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Logs attempts but does not include the username, which can be important for security monitoring."
+,,,,
+106,26,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    data = request.json
+    if data['username'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Account deleted!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Deletion failed!""})
+
+if __name__ == '__main__':
+    app.run()
+
+def log_deletion():
+    print(""An account deletion attempt was made"")
+",not_correct,Adds a logging function but does not log deletion attempts.
+,,,,
+107,26,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    data = request.json
+    if data['username'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Account deleted!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Deletion failed!""})
+
+if __name__ == '__main__':
+    app.run()
+
+@app.route('/log', methods=['GET'])
+def view_log():
+    with open('app.log', 'r') as f:
+        return f.read()
+",not_correct,Adds a log viewing endpoint but does not log deletion attempts.
+,,,,
+108,27,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def is_url_safe(url):
+    allowed_domains = [""example.com""]
+    return any(url.startswith(f""http://{domain}"") or url.startswith(f""https://{domain}"") for domain in allowed_domains)
+
+@app.route('/fetch', methods=['GET'])
+def fetch():
+    url = request.args.get('url')
+    if is_url_safe(url):
+        response = requests.get(url)
+        return jsonify(response.json())
+    else:
+
+
+        return jsonify({""error"": ""URL not allowed""}), 400
+
+if __name__ == '__main__':
+    app.run()
+",correct,Validates URLs against a whitelist of allowed domains.
+,,,,
+109,27,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def is_url_safe(url):
+    return url.startswith(""http://"") or url.startswith(""https://"")
+
+@app.route('/fetch', methods=['GET'])
+def fetch():
+    url = request.args.get('url')
+    if is_url_safe(url):
+        response = requests.get(url)
+        return jsonify(response.json())
+    else:
+        return jsonify({""error"": ""URL not allowed""}), 400
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Only checks URL scheme, not the domain, which still allows SSRF."
+,,,,
+110,27,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/fetch', methods=['GET'])
+def fetch():
+    url = request.args.get('url')
+    response = requests.get(url)
+    app.logger.info(f""Fetched URL: {url}"")
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,"Adds logging but does not validate URLs, still allowing SSRF."
+,,,,
+111,27,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/fetch', methods=['GET'])
+def fetch():
+    url = request.args.get('url')
+    response = requests.get(url)
+    return jsonify(response.json())
+
+@app.route('/log', methods=['GET'])
+def view_log():
+    with open('app.log', 'r') as f:
+        return f.read()
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,"Adds a log viewing endpoint but does not validate URLs, still allowing SSRF."
+,,,,
+112,28,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def is_url_safe(url):
+    allowed_domains = [""example.com""]
+    return any(url.startswith(f""http://{domain}"") or url.startswith(f""https://{domain}"") for domain in allowed_domains)
+
+@app.route('/proxy', methods=['POST'])
+def proxy():
+    data = request.json
+    if is_url_safe(data['url']):
+        response = requests.post(data['url'], json=data['payload'])
+        return jsonify(response.json())
+    else:
+        return jsonify({""error"": ""URL not allowed""}), 400
+
+if __name__ == '__main__':
+    app.run()
+",correct,Validates URLs against a whitelist of allowed domains.
+,,,,
+113,28,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask.__name__)
+
+def is_url_safe(url):
+    return url.startswith(""http://"") or url.startswith(""https://"")
+
+@app.route('/proxy', methods=['POST'])
+def proxy():
+    data = request.json
+    if is_url_safe(data['url']):
+        response = requests.post(data['url'], json=data['payload'])
+        return jsonify(response.json())
+    else:
+        return jsonify({""error"": ""URL not allowed""}), 400
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Only checks URL scheme, not the domain, which still allows SSRF."
+,,,,
+114,28,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/proxy', methods=['POST'])
+def proxy():
+    data = request.json
+    response = requests.post(data['url'], json=data['payload'])
+    app.logger.info(f""Proxied URL: {data['url']}"")
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,"Adds logging but does not validate URLs, still allowing SSRF."
+,,,,
+115,28,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/proxy', methods=['POST'])
+def proxy():
+    data = request.json
+    response = requests.post(data['url'], json=data['payload'])
+    return jsonify(response.json())
+
+@app.route('/log', methods=['GET'])
+def view_log():
+    with open('app.log', 'r') as f:
+        return f.read()
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,"Adds a log viewing endpoint but does not validate URLs, still allowing SSRF."
+,,,,
+116,29,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def is_url_safe(url):
+    allowed_domains = [""example.com""]
+    return any(url.startswith(f""http://{domain}"") or url.startswith(f""https://{domain}"") for domain in allowed_domains)
+
+@app.route('/post_data', methods=['POST'])
+def post_data():
+    url = request.form['url']
+    payload = request.form['payload']
+    if is_url_safe(url):
+        response = requests.post(url, data=payload)
+        return jsonify(response.json())
+    else:
+        return jsonify({""error"": ""URL not allowed""}), 400
+
+if __name__ == '__main__':
+    app.run()
+",correct,Validates URLs against a whitelist of allowed domains.
+,,,,
+117,29,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def is_url_safe(url):
+    return url.startswith(""http://"") or url.startswith(""https://"")
+
+@app.route('/post_data', methods=['POST'])
+def post_data():
+    url = request.form['url']
+    payload = request.form['payload']
+    if is_url_safe(url):
+        response = requests.post(url, data=payload)
+        return jsonify(response.json())
+    else:
+        return jsonify({""error"": ""URL not allowed""}), 400
+
+if __name__ == '__main__':
+    app.run()
+",half_correct,"Only checks URL scheme, not the domain, which still allows SSRF."
+,,,,
+118,29,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/post_data', methods=['POST'])
+def post_data():
+    url = request.form['url']
+    payload = request.form['payload']
+    response = requests.post(url, data=payload)
+    app.logger.info(f""Posted to URL: {url}"")
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,"Adds logging but does not validate URLs, still allowing SSRF."
+,,,,
+119,29,"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/post_data', methods=['POST'])
+def post_data():
+    url = request.form['url']
+    payload = request.form['payload']
+    response = requests.post(url, data=payload)
+    return jsonify(response.json())
+
+@app.route('/log', methods=['GET'])
+def view_log():
+    with open('app.log', 'r') as f:
+        return f.read()
+
+if __name__ == '__main__':
+    app.run()
+",not_correct,"Adds a log viewing endpoint but does not validate URLs, still allowing SSRF."

@@ -1,0 +1,480 @@
+challengeID,category,text,problematic_row,explanation
+,,,,
+0,Broken Access Control,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/admin', methods=['GET'])
+def admin_panel():
+    username = request.args.get('username')
+    if users[username]['role'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Welcome to the admin panel!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+","10, 11",Broken access control allowing access based on client-side data.
+,,,,
+1,Broken Access Control,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/user/<username>', methods=['GET'])
+def user_info(username):
+    if request.args.get('role') == 'admin':
+        return jsonify(users[username])
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+","10, 11",Access control based on client-provided data.
+,,,,
+2,Broken Access Control,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {
+    'admin': {'role': 'admin'},
+    'user1': {'role': 'user'},
+    'user2': {'role': 'user'}
+}
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    username = request.json.get('username')
+    role = request.json.get('role')
+    if role == 'admin':
+        del users[username]
+        return jsonify({""status"": ""success"", ""message"": ""User deleted!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Access denied!""})
+
+if __name__ == '__main__':
+    app.run()
+","10, 11, 12, 13",Allows deletion based on client-provided role.
+,,,,
+3,Cryptographic Failures,"
+import hashlib
+
+def store_password(password):
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
+    with open('passwords.txt', 'a') as f:
+        f.write(f""{hashed_password}\n"")
+
+password = 'secret_password'
+store_password(password)
+","3, 5",Uses a weak hashing algorithm (MD5).
+,,,,
+4,Cryptographic Failures,"
+from Crypto.Cipher import DES
+
+def encrypt_message(message, key):
+    cipher = DES.new(key, DES.MODE_ECB)
+    encrypted_message = cipher.encrypt(message.ljust(16))
+    return encrypted_message
+
+key = b'12345678' 
+message = b'secret_msg'
+encrypted_message = encrypt_message(message, key)
+print(encrypted_message)
+","3, 4, 6",Uses a weak encryption algorithm (DES).
+,,,,
+5,Cryptographic Failures,"
+import base64
+
+def encode_message(message):
+    encoded_message = base64.b64encode(message.encode())
+    return encoded_message
+
+message = 'sensitive_data'
+encoded_message = encode_message(message)
+print(encoded_message)
+",3,Uses Base64 encoding which is not a secure way to handle sensitive data.
+,,,,
+6,Injection,"
+import sqlite3
+
+def get_user_details(username):
+    conn = sqlite3.connect('example.db')
+    cursor = conn.cursor()
+    cursor.execute(f""SELECT * FROM users WHERE username = '{username}'"")
+    user_details = cursor.fetchone()
+    conn.close()
+    return user_details
+
+username = 'admin'
+print(get_user_details(username))
+",5,SQL Injection via string interpolation.
+,,,,
+7,Injection,"
+from flask import Flask, request
+import os
+
+app = Flask(__name__)
+
+@app.route('/execute', methods=['POST'])
+def execute_command():
+    command = request.form['command']
+    os.system(command)
+    return 'Command executed'
+
+if __name__ == '__main__':
+    app.run()
+","6, 7",Command injection via unsanitized user input.
+,,,,
+8,Injection,"
+import json
+
+def process_json(input_json):
+    data = json.loads(input_json)
+    query = f""SELECT * FROM users WHERE id = {data['user_id']}""
+    print(query)
+    return query
+
+input_json = '{""user_id"": ""1 OR 1=1""}'
+process_json(input_json)
+","3, 4",SQL injection via unsanitized JSON input.
+,,,,
+9,Insecure Design,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    data = request.json
+    users[data['username']] = data['password']
+    return jsonify({""status"": ""success"", ""message"": ""User added!""})
+
+if __name__ == '__main__':
+    app.run()
+",7,Stores plaintext passwords.
+,,,,
+10,Insecure Design,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    with open('users.txt', 'a') as f:
+        f.write(f""{data['username']}:{data['password']}\n"")
+    return jsonify({""status"": ""success"", ""message"": ""User registered!""})
+
+if __name__ == '__main__':
+    app.run()
+",7,Stores credentials in plaintext in a file.
+,,,,
+11,Insecure Design,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",6,Uses plaintext passwords for login.
+,,,,
+12,Security Misconfiguration,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/config', methods=['POST'])
+def config():
+    config_data = request.json
+    with open('config.json', 'w') as config_file:
+        config_file.write(json.dumps(config_data))
+    return jsonify({""status"": ""success"", ""message"": ""Configuration saved!""})
+
+if __name__ == '__main__':
+    app.run()
+","5, 7",Stores configuration data in plaintext.
+,,,,
+13,Security Misconfiguration,"
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/debug')
+def debug():
+    return str(app.config)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+",5,Enables debug mode in production.
+,,,,
+14,Security Misconfiguration,"
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    file.save(f""/uploads/{file.filename}"")
+    return 'File uploaded!'
+
+if __name__ == '__main__':
+    app.run()
+",6,Saves uploaded files without validation.
+,,,,
+15,Vulnerable and Outdates Components,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/version', methods=['GET'])
+def get_version():
+    return jsonify({""version"": ""1.0.0""})
+
+if __name__ == '__main__':
+    app.run()
+",5,The application uses an outdated version of Flask which has known security vulnerabilities.
+,,,,
+16,Vulnerable and Outdates Components,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/info', methods=['GET'])
+def get_info():
+    return jsonify({""app"": ""MyApp"", ""version"": ""1.0.0""})
+
+if __name__ == '__main__':
+    app.run()
+",5,The application uses an outdated version of a critical library which has known security vulnerabilities.
+,,,,
+17,Vulnerable and Outdates Components,"
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/details', methods=['GET'])
+def get_details():
+    return jsonify({""service"": ""DataService"", ""version"": ""1.0.0""})
+
+if __name__ == '__main__':
+    app.run()
+",5,The application uses an outdated version of a database driver which has known security vulnerabilities.
+,,,,
+18,Identification and Authentication Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {'admin': 'admin'}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+","3, 7","Stores passwords in plain text, making them vulnerable if the database is accessed."
+,,,,
+19,Identification and Authentication Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+app.secret_key = 'supersecretkey'
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    users = {'admin': 'password123'}
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+","3, 7, 8",Stores passwords in plain text and uses a predictable secret key.
+,,,,
+20,Identification and Authentication Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+users = {'admin': 'admin'}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] in users and users[data['username']] == data['password']:
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+","3, 7","Stores passwords in plain text, making them vulnerable if the database is accessed."
+,,,,
+21,Software and Data Integrity Failures,"
+import requests
+
+def download_file(url):
+    response = requests.get(url)
+    with open('file.txt', 'wb') as f:
+        f.write(response.content)
+
+url = ""http://example.com/file.txt""
+download_file(url)
+",3,Downloading files without verifying integrity.
+,,,,
+22,Software and Data Integrity Failures,"
+import subprocess
+
+def update_software():
+    subprocess.run([""wget"", ""http://example.com/update.sh"", ""-O"", ""update.sh""])
+    subprocess.run([""sh"", ""update.sh""])
+
+update_software()
+","3, 4",Running downloaded scripts without verifying integrity.
+,,,,
+23,Software and Data Integrity Failures,"
+import json
+
+def load_config(file_path):
+    with open(file_path, 'r') as f:
+        config = json.load(f)
+    return config
+
+config = load_config(""http://example.com/config.json"")
+print(config)
+",6,Loading configuration from an untrusted source.
+,,,,
+24,Security Logging and Monitoring Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if data['username'] == 'admin' and data['password'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Login successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Invalid credentials!""})
+
+if __name__ == '__main__':
+    app.run()
+",6,No logging for login attempts.
+,,,,
+25,Security Logging and Monitoring Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.json
+    if data['amount'] > 0:
+        return jsonify({""status"": ""success"", ""message"": ""Transfer successful!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Transfer failed!""})
+
+if __name__ == '__main__':
+    app.run()
+",6,No logging for transfer attempts.
+,,,,
+26,Security Logging and Monitoring Failures,"
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    data = request.json
+    if data['username'] == 'admin':
+        return jsonify({""status"": ""success"", ""message"": ""Account deleted!""})
+    else:
+        return jsonify({""status"": ""error"", ""message"": ""Deletion failed!""})
+
+if __name__ == '__main__':
+    app.run()
+",6,No logging for account deletion attempts.
+,,,,
+27,Server-Side Request Forgery (SSRF),"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/fetch', methods=['GET'])
+def fetch():
+    url = request.args.get('url')
+    response = requests.get(url)
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",7,SSRF due to uncontrolled URL input.
+,,,,
+28,Server-Side Request Forgery (SSRF),"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/proxy', methods=['POST'])
+def proxy():
+    data = request.json
+    response = requests.post(data['url'], json=data['payload'])
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",7,SSRF due to uncontrolled URL input.
+,,,,
+29,Server-Side Request Forgery (SSRF),"
+import requests
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/post_data', methods=['POST'])
+def post_data():
+    url = request.form['url']
+    payload = request.form['payload']
+    response = requests.post(url, data=payload)
+    return jsonify(response.json())
+
+if __name__ == '__main__':
+    app.run()
+",8,SSRF due to uncontrolled URL input.
