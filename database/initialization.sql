@@ -107,3 +107,14 @@ CREATE TABLE category5_scores (
     FOREIGN KEY (userID) REFERENCES user_scores(userID)
 );
 GO
+
+CREATE TABLE last_games_grade (
+    userID INT PRIMARY KEY,
+    score1 INT,
+    score2 INT,
+    score3 INT,
+    score4 INT,
+    score5 INT,
+    FOREIGN KEY (userID) REFERENCES user_scores(userID)
+);
+GO

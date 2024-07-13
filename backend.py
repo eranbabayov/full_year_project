@@ -117,7 +117,7 @@ def login():
             session['username'] = username
             session['userID'] = user_data['userID']
             failed_login_attempts[request.remote_addr] = 0
-            return redirect(url_for('userDashboard',name= username))
+            return redirect(url_for('user_dashboard',name= username))
         else:
             flash('Invalid username or password')
             failed_login_attempts[request.remote_addr] += 1
@@ -185,19 +185,38 @@ def dashboard():
 
 
 @app.route('/<name>/dashboard')
-def userDashboard(name):
-    return render_template('userDashboard.html', username=name)
+def user_dashboard(name):
+    return render_template('user_dashboard.html', username=name)
 
-@app.route('/<name>/game')
-def startGame(name):
-    name = session['username']
-    return render_template('website1.html', username=name)
+# @app.route('/<name>/game')
+# def start_game(name):
+#     return render_template('website1.html', username=name)
+@app.route('/challenge/<int:challenge_id>')
+def start_game(challenge_id):
+    print("HEREEEEEEEEEEEEEEEEEEEEEEEEE start_game")
 
+    challenge_data = get_challenges_based_to_challenge_id(challenge_id)
+    solutions_data = get_solutions_based_to_challenge_id(challenge_id)
+    print("challenge data: ", challenge_data)
+    print("solutions_data: ", solutions_data)
+
+    if not challenge_data:
+        return "Challenge not found", 404
+    return render_template('new_website1.html', challenge=challenge_data, solutions=solutions_data)
 
 @app.route('/game')
-def callGame():
-    username = session['username']
-    return redirect(url_for('startGame', name =username))
+def call_game():
+    # username = session['username']
+    print("HEREEEEEEEEEEEEEEEEEEEEEEEEE call_game")
+    challenge_id = 0
+    return redirect(url_for('start_game', challenge_id=challenge_id))
+
+@app.route('/next/<int:current_id>')
+def next_challenge(current_id):
+    next_id = current_id + 1
+    print("HEREEEEEEEEEEEEEEEEEEEEEEEEE next_challenge")
+
+    return redirect(url_for('start_game', challenge_id=next_id))
 
 @app.route('/set_new_pwd', methods=['GET', 'POST'])
 def set_new_pwd():

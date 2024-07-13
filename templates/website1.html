@@ -62,9 +62,9 @@
                     <pre>
     <code>
         (1)from flask import Flask, request, jsonify
-        
+
         (2)app = Flask(__name__)
-        
+
         (3)@app.route('/update_role', methods=['POST'])
         (4)def update_role():
         (5)    user_id = request.form['user_id']
@@ -72,7 +72,7 @@
         (7)    # Update the role in the database
         (8)    update_user_role(user_id, new_role)
         (9)    return jsonify({""message"": ""Role updated successfully""})
-        
+
         (10)if __name__ == '__main__':
         (11)    app.run()
 
@@ -287,7 +287,7 @@
                     </div>
                 </div>
 
-                
+
 
                  <!-- QuestionID 6: Insecure Design -->
              <div class="question" id="question7" style="display: none;">
@@ -352,17 +352,17 @@
                     <pre>
                         <code>
                             (1) from flask import Flask, request, jsonify
-                            
+
                             (2) app = Flask(__name__)
-                            
+
                             (3) @app.route('/update_profile', methods=['POST'])
                             (4) def update_profile():
                             (5)     user_data = request.json
                             (6)     # No authentication check
                             (7)     return jsonify({""message"": ""Profile updated successfully""})
-                            
+
                             (8) if __name__ == '__main__':
-                            (9)     app.run()                            
+                            (9)     app.run()
                         </code>
                         </code>
                     </pre>
@@ -777,7 +777,7 @@
 
                                 (15) if __name__ == '__main__':
                                 (16)     app.run()
-                                
+
                             </code>
                         </pre>
                         <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
@@ -823,7 +823,7 @@
 
                                 (10) if __name__ == '__main__':
                                 (11)     app.run()
-                                
+
                             </code>
                         </pre>
                         <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
@@ -855,7 +855,7 @@
                         <h3>Identify the error in the code:</h3>
                         <pre>
                             <code>
-                                
+
                                 (1) from flask import Flask, request, jsonify
 
                                 (2) app = Flask(__name__)
@@ -869,7 +869,7 @@
 
                                 (9) if __name__ == '__main__':
                                 (10)     app.run()
-                                
+
                             </code>
                         </pre>
                         <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
@@ -901,7 +901,7 @@
                         <h3>Identify the error in the code:</h3>
                         <pre>
                             <code>
-                                
+
                                 (1) from flask import Flask, request, jsonify
 
                                 (2) app = Flask(__name__)
@@ -917,7 +917,7 @@
 
                                 (11) if __name__ == '__main__':
                                 (12)     app.run()
-                                
+
                             </code>
                         </pre>
                         <button onclick="detectError('question11')" style="width: 80px; height: 20px;">Submit</button>
@@ -1046,7 +1046,7 @@
                         <h3>Identify the error in the code:</h3>
                         <pre>
                             <code>
-                                
+
                                 (1) from flask import Flask, request, jsonify
 
                                 (2) app = Flask(__name__)

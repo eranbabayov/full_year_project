@@ -195,11 +195,25 @@ def generate_new_password_hashed(new_password, generate_to_hex=False):
     return new_password_hashed, user_salt
 
 
-def check_if_reset_token_exists(reset_token):
+def check_if_reset_token_exists(reset_token) -> dict:
     with conn.cursor(as_dict=True) as cursor:
         hashed_token = hashlib.sha1(
             reset_token.encode('utf-8')).digest().hex()
         cursor.execute(
             '''SELECT * FROM users WHERE reset_token = %s''',
             (hashed_token,))
+        return cursor.fetchone()
+
+
+def get_challenges_based_to_challenge_id(challenge_id: int) -> dict:
+    with conn.cursor(as_dict=True) as cursor:
+        cursor.execute(
+            "SELECT * FROM Challenges WHERE challengeID = %s", (challenge_id,))
+        return cursor.fetchone()
+
+
+def get_solutions_based_to_challenge_id(challenge_id: int) -> dict:
+    with conn.cursor(as_dict=True) as cursor:
+        cursor.execute(
+            "SELECT * FROM solutions WHERE challengeID = %s", (challenge_id,))
         return cursor.fetchone()

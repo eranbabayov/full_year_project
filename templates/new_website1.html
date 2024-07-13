@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='website1.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="question">
+            <h2>{{ challenge['challengeID'] }}. {{ challenge['category'] }}</h2>
+            <div class="box" id="code-box{{ challenge['challengeID'] }}">
+                <h3>Identify the error in the code:</h3>
+                <pre>
+<code>
+{{ challenge['text'] }}
+</code>
+                </pre>
+                <p>Enter row number:</p>
+                <input type="text" id="q{{ challenge['challengeID'] }}" name="q{{ challenge['challengeID'] }}" required>
+                <button onclick="detectError('question{{ challenge['challengeID'] }}')" style="width: 80px; height: 20px;">Submit</button>
+            </div>
+            <div id="answer-box{{ challenge['challengeID'] }}" class="answer-box">
+                <div class="left-section">
+                    <h2>The incorrect code line is:</h2>
+                    <p>{{ challenge['problematic_row'] }}</p>
+                </div>
+                <div class="right-section">
+                    <h2>Choose the best correction:</h2>
+                    <div class="Correction_options">
+                        {% for solution in solutions %}
+                            <button onclick="openTextBox('{{ challenge['challengeID'] }}', '{{ solution['solutionID'] }}')">{{ solution['solutionID'] }}</button>
+                        {% endfor %}
+                    </div>
+                    <div id="answerText{{ challenge['challengeID'] }}"></div>
+                    <br><br>
+                    <a href="{{ url_for('next_challenge', current_id=challenge['challengeID']) }}">
+                        <button style="width: 80px; height: 20px;">Next</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
