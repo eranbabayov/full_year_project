@@ -42,60 +42,6 @@ def index():
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
-questions = [
-    {
-        "id": 1,
-        "title": "Broken Access Control",
-        "description": "Identify the error in the code:",
-        "code": [
-            "from flask import Flask, request, jsonify",
-            "app = Flask(__name__)",
-            "@app.route('/view_profile', methods=['GET'])",
-            "def view_profile():",
-            "    user_id = request.args.get('user_id')",
-            "    with open(f\"/home/users/{user_id}.json\", \"r\") as f:",
-            "        profile = f.read()",
-            "    return jsonify({\"profile\": profile})",
-            "if __name__ == '__main__':",
-            "    app.run()"
-        ],
-        "question": "Identify the error in the code::",
-        "correction_options": ["1", "2", "3", "4"],
-        "problematic_row": 8
-    },
-    {
-        "id": 2,
-        "title": "Cryptographic Failures",
-        "description": "Identify the error in the code:",
-        "code": [
-            "from flask import Flask, request, jsonify",
-            "app = Flask(__name__)",
-            "@app.route('/view_profile', methods=['GET'])",
-            "def view_profile():",
-            "    user_id = request.args.get('user_id')",
-            "    with open(f\"/home/users/{user_id}.json\", \"r\") as f:",
-            "        profile = f.read()",
-            "    return jsonify({\"profile\": profile})",
-            "if __name__ == '__main__':",
-            "    app.run()"
-        ],
-        "question": "Enter row number:",
-        "correction_options": ["1", "2", "3", "4"],
-        "problematic_row": 8
-    }
-    # Add more questions here
-]
-
-def ch():
-    pass
-
-@app.route('/web')
-def web():
-    return render_template('index.html', questions=questions)
-
-@app.route('/quiz')
-def get_questions():
-    return jsonify(questions)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -164,59 +110,46 @@ def register():
 
     return render_template('register.html')
 
-@app.route('/base')
-def base():
-    return render_template('base.html')
-
-@app.route('/base2')
-def base2():
-    return render_template('base2.html')
-
-@app.route('/may')
-def may():
-    return render_template('website1.html')
 
 @app.route('/dashboard')
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
     username = session['username']
-    return render_template('dashboard.html', username=username)
+    return render_template('user_dashboard.html', username=username)
 
 
 @app.route('/<name>/dashboard')
 def user_dashboard(name):
     return render_template('user_dashboard.html', username=name)
 
-# @app.route('/<name>/game')
-# def start_game(name):
-#     return render_template('website1.html', username=name)
+
 @app.route('/challenge/<int:challenge_id>')
 def start_game(challenge_id):
-    print("HEREEEEEEEEEEEEEEEEEEEEEEEEE start_game")
-
     challenge_data = get_challenges_based_to_challenge_id(challenge_id)
     solutions_data = get_solutions_based_to_challenge_id(challenge_id)
     print("challenge data: ", challenge_data)
     print("solutions_data: ", solutions_data)
 
-    if not challenge_data:
-        return "Challenge not found", 404
-    return render_template('new_website1.html', challenge=challenge_data, solutions=solutions_data)
+    if not challenge_data or not solutions_data:
+        return "Challenge or solutions not found", 404
+    return render_template('questions_answers.html', challenge=challenge_data, solutions=solutions_data)
+
 
 @app.route('/game')
 def call_game():
-    # username = session['username']
-    print("HEREEEEEEEEEEEEEEEEEEEEEEEEE call_game")
     challenge_id = 0
     return redirect(url_for('start_game', challenge_id=challenge_id))
 
+
 @app.route('/next/<int:current_id>')
 def next_challenge(current_id):
-    next_id = current_id + 1
-    print("HEREEEEEEEEEEEEEEEEEEEEEEEEE next_challenge")
+    if current_id > 29:
+        return "finish! no more questions!", 404  # todo: Need to change it!!
 
+    next_id = current_id + 1
     return redirect(url_for('start_game', challenge_id=next_id))
+
 
 @app.route('/set_new_pwd', methods=['GET', 'POST'])
 def set_new_pwd():

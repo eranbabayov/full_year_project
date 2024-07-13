@@ -13,19 +13,18 @@ body {
     color: #00ff00; /* Set font color */
 }
 
-
-
 .container {
     display: flex;
     flex-direction: column;
-    width: 80%;
-    height: 90%;
+    width: 90%; /* Adjust width for better responsiveness */
     max-width: 1000px;
+    height: 90vh; /* Adjust height to fit content properly */
     border: 1px solid #00ff00;
     padding: 10px;
-    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    box-shadow: 0 0 10px rgba(46, 249, 164, 0.8); /* Adjust shadow intensity */
     box-sizing: border-box;
-    background-color: rgba(47, 82, 222, 0.6); /* Add a semi-transparent background for better readability */
+    background-color: rgba(47, 82, 222, 0.8); /* Semi-transparent background */
+    overflow: auto; /* Prevent overflow content */
 }
 
 .question {
@@ -42,53 +41,45 @@ body {
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
-    margin-bottom: 200px;
+    margin-bottom: 20px; /* Adjust margin bottom */
     border: 1px solid #00ff00;
-    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    box-shadow: 0 0 10px rgba(46, 249, 164, 0.8);
     box-sizing: border-box;
+    overflow: auto; /* Prevent overflow content */
 }
 
-
-
-#code-box1, #code-box2, #code-box3, #code-box4, #code-box5, #code-box6, #code-box7, #code-box8, #code-box9, #code-box10, #code-box11 {
-    height: 400px; /* Adjust the height as needed */
-    padding: 15px;
+.code-box {
+    max-height: 400px; /* Limit height to prevent overflow */
     overflow: auto;
     margin-bottom: 10px;
     border: 1px solid #00ff00;
-    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
+    box-shadow: 0 0 10px rgba(46, 249, 164, 0.8);
     box-sizing: border-box;
 }
 
-#code-box1 pre, #code-box2 pre, #code-box3 pre, #code-box4 pre, #code-box5 pre, #code-box6 pre, #code-box7 pre, #code-box8 pre, #code-box9 pre, #code-box10 pre, #code-box11 pre {
+.code-box pre {
     margin: 0;
     font-size: 14px;
     color: #00ff00; /* Set font color for code */
 }
 
-#code-box1 label, #code-box2 label, #code-box3 label ,#code-box4 label ,#code-box5 label,#code-box6 label ,#code-box7 label ,#code-box8 label,#code-box9 label ,#code-box10 label ,#code-box11 label    {
-    display: flex;
-    align-items: flex-start; 
-    margin-bottom: 0; /* Adjust this value to reduce the vertical space between radio buttons */
-}
-
-
 .answer-box {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px; /* Add margin top for spacing */
+    overflow: auto; /* Prevent overflow content */
 }
 
 .left-section, .right-section {
     flex: 1;
     padding: 10px;
     border: 1px solid #00ff00;
-    box-shadow: 0 0 10px rgba(46, 249, 164, 1);
-    margin-right: 10px;
+    box-shadow: 0 0 10px rgba(46, 249, 164, 0.8);
     box-sizing: border-box;
 }
 
 .right-section {
-    margin-right: 0;
+    margin-left: 10px; /* Adjust margin left for spacing */
 }
 
 .Correction_options button {
@@ -109,6 +100,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    margin-top: 20px; /* Add margin top for spacing */
 }
 
 .navigation button {
@@ -123,7 +115,3 @@ body {
 .navigation button:hover {
     background-color: #00ff00;
 }
-
-
-
-

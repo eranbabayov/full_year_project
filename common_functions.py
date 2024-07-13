@@ -19,6 +19,7 @@ while True:
             "SecurityPerformance")
         break
     except pymssql.OperationalError:
+        print("unable to connect")
         time.sleep(1)
 
 conn = pymssql.connect("172.17.0.1", "sa", password, "SecurityPerformance")
@@ -216,4 +217,10 @@ def get_solutions_based_to_challenge_id(challenge_id: int) -> dict:
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(
             "SELECT * FROM solutions WHERE challengeID = %s", (challenge_id,))
-        return cursor.fetchone()
+        return cursor.fetchall()
+
+if __name__ == '__main__':
+    solution_data = get_solutions_based_to_challenge_id(0)
+    for solution_key, val in solution_data.items():
+        print(solution_key)
+        print(val)

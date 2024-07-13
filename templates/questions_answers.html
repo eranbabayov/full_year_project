@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='website1.css') }}">
+    <script>
+    var submissionCount = 0;
+    var chooseCorrection = 0;
+    function detectError(challengeID) {
+        if (submissionCount > 0) {
+            alert("You have already submitted your answer for this challenge.");
+            return;
+        }
+
+        var inputRow = document.getElementById('q' + challengeID).value.trim();
+        var problematicRow = "{{ challenge['problematic_row'] }}";
+
+        // Compare user input with the correct problematic row
+        if (inputRow === problematicRow) {
+            document.getElementById('answerText' + challengeID).innerHTML = "<p style='color: green;'>Correct! You identified the issue.</p>";
+        } else {
+            document.getElementById('answerText' + challengeID).innerHTML = "<p style='color: red;'>Incorrect Answer.</p>";
+        }
+
+        // Show the answer box after submitting
+        document.getElementById('answer-box' + challengeID).style.display = 'block';
+
+        // Disable the input field and submit button
+        document.getElementById('q' + challengeID).disabled = true;
+        document.querySelector('#code-box' + challengeID + ' button').disabled = true;
+
+        submissionCount++;
+    }
+
+    function openTextBox(challengeID, text) {
+        const formattedText = text.replace(/&#10;/g, '\n').replace(/&nbsp;/g, ' ');
+        document.getElementById('answerText' + challengeID).innerHTML = "<pre><code>" + formattedText + "</code></pre>";
+    }
+
+    function submitCorrection(challengeID, correctness) {
+        if (chooseCorrection>0){
+            alert("You have already submitted your answer for this challenge.");
+                return;
+        }
+        let message = "";
+        if (correctness === 'correct') {
+            message = "<p style='color: green;'>Correct! You chose the best correction.</p>";
+        } else if (correctness === 'half_correct') {
+            message = "<p style='color: orange;'>Partially correct. You chose a good correction but there is a better one.</p>";
+        } else if (correctness === 'not_correct') {
+            message = "<p style='color: red;'>Incorrect. Try to understand why this correction is not right.</p>";
+        }
+        document.getElementById('correctionFeedback' + challengeID).innerHTML = message;
+        chooseCorrection++;
+    }
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="question">
+        <h2>{{ challenge['challengeID'] }}. {{ challenge['category'] }}</h2>
+        <div class="box" id="code-box{{ challenge['challengeID'] }}">
+            <h3>Identify the error in the code:</h3>
+            <pre><code>{{ challenge['text'] }}</code></pre>
+            <p>Enter row number:</p>
+            <input type="text" id="q{{ challenge['challengeID'] }}" name="q{{ challenge['challengeID'] }}" required>
+            <button onclick="detectError('{{ challenge['challengeID'] }}')" style="width: 80px; height: 20px;">Submit</button>
+        </div>
+        <div id="answer-box{{ challenge['challengeID'] }}" class="answer-box" style="display: none;">
+            <div class="left-section">
+                <h2>The incorrect code line is:</h2>
+                <p>{{ challenge['problematic_row'] }}</p>
+            </div>
+            <div class="right-section">
+                <h2>Feedback:</h2>
+                <div id="answerText{{ challenge['challengeID'] }}"></div>
+                <br><br>
+                <h2>Choose the best correction:</h2>
+                <div class="Correction_options">
+                    {% for solution in solutions %}
+                        <button data-text="{{ solution['text'] | replace('\n', '&#10;') | replace(' ', '&nbsp;') }}"
+                                onclick="openTextBox('{{ challenge['challengeID'] }}', this.getAttribute('data-text'));">
+                            {{ solution['solutionID'] }}
+                        </button>
+                        <button onclick="submitCorrection('{{ challenge['challengeID'] }}', '{{ solution['correctness'] }}')">
+                            Submit Correction
+                        </button>
+                    {% endfor %}
+                </div>
+                <div id="correctionFeedback{{ challenge['challengeID'] }}"></div>
+            </div>
+        </div>
+        <br><br>
+        <a href="{{ url_for('next_challenge', current_id=challenge['challengeID']) }}">
+            <button style="width: 80px; height: 20px;">Next</button>
+        </a>
+    </div>
+</div>
+</body>
+</html>
