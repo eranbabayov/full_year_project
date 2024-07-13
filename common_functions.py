@@ -36,46 +36,11 @@ def get_user_data_from_db(username=None, password=None):
         return cursor.fetchone()
 
 
-def insert_new_client(client_data):
-    with conn.cursor(as_dict=True) as cursor:
-        cursor.execute(
-            "INSERT INTO clients (representative_id, sector_id, package_id, ssn, first_name, last_name, email, phone_number) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-            (client_data['representative_id'],
-             client_data['sector_id'],
-             client_data['package_id'],
-             client_data['ssn'],
-             client_data['first_name'],
-             client_data['last_name'],
-             client_data['email'],
-             client_data['phone_number']))
-        client_id = cursor.lastrowid
-    conn.commit()
-    return client_id
-
-
-def get_user_sectors(userID):
-    with conn.cursor(as_dict=True) as cursor:
-        cursor.execute(
-            "SELECT sector_name, sectors.sector_id FROM sectors JOIN user_sectors ON sectors.sector_id = user_sectors.sector_id WHERE userID = %s",
-            (userID,))
-        sectors = cursor.fetchall()
-        sectors = [(sector['sector_name'], sector['sector_id'])
-                   for sector in sectors]
-    return sectors
-
-
 def get_client_data(client_id):
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(
             "SELECT * FROM clients WHERE client_id = %s", (client_id,))
         return cursor.fetchone()
-
-
-def get_client_data_by_name(first_name, last_name):
-    with conn.cursor(as_dict=True) as cursor:
-        cursor.execute(
-            "SELECT * FROM clients WHERE first_name = %s AND last_name = %s", (first_name, last_name))
-        return cursor.fetchall()
 
 
 def get_user_salt(userID):
