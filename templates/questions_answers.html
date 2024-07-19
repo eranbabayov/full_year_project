@@ -8,6 +8,7 @@
     <script>
     var submissionCount = 0;
     var chooseCorrection = 0;
+
     function detectError(challengeID) {
         if (submissionCount > 0) {
             alert("You have already submitted your answer for this challenge.");
@@ -18,11 +19,30 @@
         var problematicRow = "{{ challenge['problematic_row'] }}";
 
         // Compare user input with the correct problematic row
-        if (inputRow === problematicRow) {
+        var user_answer = inputRow.split(',');
+        var problematic_rows_from_database = problematicRow.split(',');
+        var correct_rows = 0;
+        var wrong_rows = 0;
+
+        user_answer.forEach(function(answer) {
+            if (problematic_rows_from_database.includes(answer)) {
+                correct_rows++;
+            } else {
+                wrong_rows++;
+            }
+        });
+
+        var detectErrorResult;
+        if (wrong_rows === 0 && correct_rows === problematic_rows_from_database.length) {
+            detectErrorResult = 100;
             document.getElementById('answerText' + challengeID).innerHTML = "<p style='color: green;'>Correct! You identified the issue.</p>";
         } else {
+            detectErrorResult = 0;
             document.getElementById('answerText' + challengeID).innerHTML = "<p style='color: red;'>Incorrect Answer.</p>";
         }
+
+        // Update hidden input field with the result
+        document.getElementById('detectErrorResult').value = detectErrorResult;
 
         // Show the answer box after submitting
         document.getElementById('answer-box' + challengeID).style.display = 'block';
@@ -30,8 +50,9 @@
         // Disable the input field and submit button
         document.getElementById('q' + challengeID).disabled = true;
         document.querySelector('#code-box' + challengeID + ' button').disabled = true;
-
         submissionCount++;
+
+        return detectErrorResult;
     }
 
     function openTextBox(challengeID, text) {
@@ -40,22 +61,38 @@
     }
 
     function submitCorrection(challengeID, correctness) {
-        if (chooseCorrection>0){
+        if (chooseCorrection > 0) {
             alert("You have already submitted your answer for this challenge.");
-                return;
+            return;
         }
         let message = "";
+        let user_grade = 0;
         if (correctness === 'correct') {
             message = "<p style='color: green;'>Correct! You chose the best correction.</p>";
+            user_grade = 100;
         } else if (correctness === 'half_correct') {
             message = "<p style='color: orange;'>Partially correct. You chose a good correction but there is a better one.</p>";
+            user_grade = 50;
         } else if (correctness === 'not_correct') {
             message = "<p style='color: red;'>Incorrect. Try to understand why this correction is not right.</p>";
         }
         document.getElementById('correctionFeedback' + challengeID).innerHTML = message;
         chooseCorrection++;
+
+        // Update hidden input field with the result
+        document.getElementById('submitCorrectionResult').value = user_grade;
+
+        return user_grade;
     }
 
+    function goToNextChallenge(challengeID) {
+        var detectErrorResult = document.getElementById('detectErrorResult').value;
+        var submitCorrectionResult = document.getElementById('submitCorrectionResult').value;
+
+        window.location.href = "{{ url_for('next_challenge', current_id=challenge['challengeID']) }}" +
+                                "?detect_error_result=" + detectErrorResult +
+                                "&submit_correction_result=" + submitCorrectionResult;
+    }
     </script>
 </head>
 <body>
@@ -94,9 +131,11 @@
             </div>
         </div>
         <br><br>
-        <a href="{{ url_for('next_challenge', current_id=challenge['challengeID']) }}">
-            <button style="width: 80px; height: 20px;">Next</button>
-        </a>
+        <!-- Hidden inputs to store function results -->
+        <input type="hidden" id="detectErrorResult" value="">
+        <input type="hidden" id="submitCorrectionResult" value="">
+
+        <button onclick="goToNextChallenge('{{ challenge['challengeID'] }}')" style="width: 80px; height: 20px;">Next</button>
     </div>
 </div>
 </body>

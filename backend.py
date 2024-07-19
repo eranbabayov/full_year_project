@@ -7,6 +7,9 @@ from app_configuration import app_configuration, get_security_parameters
 from flask_mail import Mail
 from time import time
 import random
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app = app_configuration(app)
@@ -128,9 +131,6 @@ def user_dashboard(name):
 def start_game(challenge_id):
     challenge_data = get_challenges_based_to_challenge_id(challenge_id)
     solutions_data = get_solutions_based_to_challenge_id(challenge_id)
-    print("challenge data: ", challenge_data)
-    print("solutions_data: ", solutions_data)
-
     if not challenge_data or not solutions_data:
         return "Challenge or solutions not found", 404
     return render_template('questions_answers.html', challenge=challenge_data, solutions=solutions_data)
@@ -144,9 +144,30 @@ def call_game():
 
 @app.route('/next/<int:current_id>')
 def next_challenge(current_id):
-    if current_id > 29:
-        return "finish! no more questions!", 404  # todo: Need to change it!!
+    detect_error_result = request.args.get('detect_error_result',default=0, type=int)
+    submit_correction_result = request.args.get('submit_correction_result', default=0, type=int)
 
+    # Initialize session['game_grade'] as a dictionary if it doesn't exist
+    if 'game_grade' not in session:
+        session['game_grade'] = {}
+    elif not isinstance(session['game_grade'], dict):
+        session['game_grade'] = {}
+
+    # Add new entry to the dictionary without overwriting the entire dictionary
+    game_grade = session['game_grade']
+    game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
+    session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
+
+    if current_id > 4:
+        grade=0
+        number_of_answer_questions = len(session['game_grade'].keys())
+        logging.debug("########################")
+        logging.debug(number_of_answer_questions)
+        for result in session['game_grade'].values():
+            grade = result[0] + result[1] + grade
+        final_grade = grade / (2 * number_of_answer_questions)
+
+        return f"Finish! your grade: {final_grade:.2f}", 404  # TODO: Change this!
     next_id = current_id + 1
     return redirect(url_for('start_game', challenge_id=next_id))
 
