@@ -159,13 +159,14 @@ def next_challenge(current_id):
     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
 
     if current_id > 4:
-        grade=0
+        grade = 0
         number_of_answer_questions = len(session['game_grade'].keys())
         logging.debug("########################")
         logging.debug(number_of_answer_questions)
-        for result in session['game_grade'].values():
-            grade = result[0] + result[1] + grade
-        final_grade = grade / (2 * number_of_answer_questions)
+
+        total_score = sum(score[0] for score in session['game_grade'].values())
+        total_possible = len(session['game_grade']) * 100
+        final_grade = (total_score / total_possible) * 100 if total_possible > 0 else 0
 
         return f"Finish! your grade: {final_grade:.2f}", 404  # TODO: Change this!
     next_id = current_id + 1
