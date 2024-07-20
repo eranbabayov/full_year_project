@@ -148,10 +148,7 @@ def next_challenge(current_id):
     submit_correction_result = request.args.get('submit_correction_result', default=0, type=int)
 
     # Initialize session['game_grade'] as a dictionary if it doesn't exist
-    if 'game_grade' not in session:
-        session['game_grade'] = {}
-    elif not isinstance(session['game_grade'], dict):
-        session['game_grade'] = {}
+    initialize_game_grade_session_as_dictionary(session)
 
     # Add new entry to the dictionary without overwriting the entire dictionary
     game_grade = session['game_grade']
@@ -159,16 +156,8 @@ def next_challenge(current_id):
     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
 
     if current_id > 4:
-        grade = 0
-        number_of_answer_questions = len(session['game_grade'].keys())
-        logging.debug("########################")
-        logging.debug(number_of_answer_questions)
-
-        total_score = sum(score[0] for score in session['game_grade'].values())
-        total_possible = len(session['game_grade']) * 100
-        final_grade = (total_score / total_possible) * 100 if total_possible > 0 else 0
-
-        return f"Finish! your grade: {final_grade:.2f}", 404  # TODO: Change this!
+        final_grade = finish_game(session=session)
+        return f"Finish! your grade: {final_grade}", 404  # TODO: Change this!
     next_id = current_id + 1
     return redirect(url_for('start_game', challenge_id=next_id))
 

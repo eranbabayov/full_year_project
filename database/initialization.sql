@@ -39,7 +39,7 @@ CREATE TABLE Solutions (
 GO
 
 CREATE TABLE user_scores (
-    userID INT IDENTITY(1,1) PRIMARY KEY
+    userID INT PRIMARY KEY,
     FOREIGN KEY (userID) REFERENCES users(userID)
 );
 GO

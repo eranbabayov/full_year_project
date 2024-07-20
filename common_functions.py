@@ -6,6 +6,7 @@ from flask import flash
 from app_configuration import *
 from flask_mail import Message
 import hashlib
+import logging
 
 load_dotenv()
 password = os.getenv('MSSQL_SA_PASSWORD')
@@ -73,6 +74,9 @@ def insert_new_user_to_db(new_username, new_password, new_email, salt):
         cursor.execute(
             "INSERT INTO password_history (userID,password,salt) VALUES (%s, %s, %s)",
             (userID, new_password, salt))
+        cursor.execute(
+            "INSERT INTO user_scores (userID) VALUES (%s)",
+            (userID,))
         # Commit the transaction
         conn.commit()
 
@@ -218,6 +222,50 @@ def get_solutions_based_to_challenge_id(challenge_id: int) -> dict:
         cursor.execute(
             "SELECT * FROM solutions WHERE challengeID = %s", (challenge_id,))
         return cursor.fetchall()
+
+
+def insert_new_grade(user_id: int, grade: int) -> None:
+    with conn.cursor() as cursor:
+        cursor.execute(
+            '''SELECT score1, score2, score3, score4, score5
+               FROM last_games_grade
+               WHERE userID = %s''', (user_id,))
+        result = cursor.fetchone()
+
+        if result:
+            score1, score2, score3, score4, score5 = result
+            cursor.execute(
+                '''UPDATE last_games_grade
+                   SET score1 = %s, score2 = %s, score3 = %s, score4 = %s, score5 = %s
+                   WHERE userID = %s''',
+                (score2, score3, score4, score5, grade, user_id))
+        else:
+            cursor.execute(
+                '''INSERT INTO last_games_grade (userID, score1, score2, score3, score4, score5)
+                   VALUES (%s, %s, NULL, NULL, NULL, NULL)''', (user_id, grade))
+        conn.commit()
+
+def initialize_game_grade_session_as_dictionary(session):
+    if 'game_grade' not in session:
+        session['game_grade'] = {}
+    elif not isinstance(session['game_grade'], dict):
+        session['game_grade'] = {}
+
+
+def finish_game(session) -> int:
+    number_of_answer_questions = len(session['game_grade'].keys())
+    logging.debug("########################")
+    logging.debug(number_of_answer_questions)
+    user_score = 0
+    for score in session['game_grade'].values():
+        user_score += score[0] + score[1]
+    logging.debug(f"user score is: {user_score}")
+    total_possible = len(session['game_grade']) * 200
+    final_grade = user_score / total_possible * 100 if total_possible > 0 else 0
+    final_grade = int(final_grade)
+    insert_new_grade(user_id=session['userID'], grade=final_grade)
+    return final_grade
+
 
 if __name__ == '__main__':
     solution_data = get_solutions_based_to_challenge_id(0)
