@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='website1.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ username }} games summary</h1>
+
+        <a href="{{ url_for('logout') }}">
+            <button type="submit">Logout</button>
+        </a>
+        <br><br>
+
+        <a href="{{ url_for('user_dashboard', name=username) }}">
+            <button type="submit">Back to Homepage</button>
+        </a>
+        <br><br>
+
+        <h2>User final scores: {{ user_scores }}</h2>
+        <h2>Your average score: {{ user_avg_score }}</h2>
+        <h2>Your rank: {{ user_rank }}</h2>
+
+        <h3>Your Scores Plot:</h3>
+        <img src="data:image/png;base64,{{ user_scores_plot }}" alt="User Scores Plot">
+
+        <h3>Average Scores Distribution:</h3>
+        <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="Average Scores Plot">
+    </div>
+</body>
+</html>

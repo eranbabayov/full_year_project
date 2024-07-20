@@ -1,7 +1,5 @@
-import ast
 import string
-
-from flask import jsonify, render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session
 from common_functions import *
 from app_configuration import app_configuration, get_security_parameters
 from flask_mail import Mail
@@ -155,9 +153,9 @@ def next_challenge(current_id):
     game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
 
-    if current_id > 4:
-        final_grade = finish_game(session=session)
-        return f"Finish! your grade: {final_grade}", 404  # TODO: Change this!
+    if current_id > 2:
+        grade = finish_game(session=session)
+        return redirect(url_for('game_finish', grade=grade))
     next_id = current_id + 1
     return redirect(url_for('start_game', challenge_id=next_id))
 
@@ -244,6 +242,64 @@ def password_reset():
             return redirect(url_for('password_reset'))
     else:
         return render_template('password_reset.html')
+
+@app.route('/game_finish')
+def game_finish():
+    grade = request.args.get('grade')
+    return render_template('game_finish.html', username=session.get("username"), grade=grade)
+
+
+@app.route('/summarise')
+def user_summarise():
+    if request.method == "GET":
+        user_scores, other_users_scores = get_summarise_user_info(session['userID'])
+
+        # Filter out None values and calculate user average score
+        user_scores = [score for score in user_scores if score is not None]
+        user_avg_score = sum(user_scores) / len(user_scores) if user_scores else 0
+
+        # Calculate other users' average scores
+        other_users_avg_scores = []
+        for scores in other_users_scores:
+            filtered_scores = [score for score in scores if score is not None]
+            if filtered_scores:
+                other_users_avg_scores.append(sum(filtered_scores) / len(filtered_scores))
+
+        # Calculate user rank
+        all_avg_scores = other_users_avg_scores + [user_avg_score]
+        user_rank = sorted(all_avg_scores, reverse=True).index(user_avg_score) + 1
+
+        # Create user scores plot
+        plt.figure(figsize=(10, 5))
+        plt.plot(user_scores, marker='o', label='Your Scores')
+        plt.title('Your Last 5 Game Scores')
+        plt.xlabel('Games')
+        plt.ylabel('Scores')
+        plt.legend()
+        user_scores_plot = plot_to_img()
+
+        # Create average scores plot
+        plt.figure(figsize=(10, 5))
+        min_avg_score = min(all_avg_scores)
+        max_avg_score = max(all_avg_scores)
+        bins = range(int(min_avg_score), int(max_avg_score) + 2)  # Ensure each score gets its own bin
+        plt.hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users')
+        plt.axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
+        plt.title('Average Scores Distribution')
+        plt.xlabel('Average Score')
+        plt.ylabel('Number of Users')
+        plt.legend()
+        avg_scores_plot = plot_to_img()
+
+        return render_template(
+            'user_summarise.html',
+            username=session['username'],
+            user_scores=user_scores,
+            user_avg_score=user_avg_score,
+            user_rank=user_rank,
+            user_scores_plot=user_scores_plot,
+            avg_scores_plot=avg_scores_plot
+        )
 
 
 if __name__ == '__main__':

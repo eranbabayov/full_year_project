@@ -9,25 +9,25 @@
 <body>
     <div class="container">
 
-        <h1>Welcome, {{ username }}!!</h1>
+        <h1>{{ username }} game grade: {{ grade }}</h1>
 
         <a href="{{ url_for('user_summarise') }}">
             <button type="submit">user games summarise</button>
         </a>
         <br><br>
-    
+
+        <a href="{{ url_for('user_dashboard', name=username) }}">
+            <button type="submit">Back to Homepage</button>
+        </a>
+        <br><br>
+
         <a href="{{ url_for('logout') }}">
             <button type="submit">Logout</button>
         </a>
         <br><br>
-    
-        <a href="{{ url_for('set_new_pwd') }}">
-            <button type="submit">change my password</button>
-        </a>
-        <br><br>
 
         <a href="{{ url_for('call_game') }}">
-            <button type="submit">Start Game</button>
+            <button type="submit">Start Another Game</button>
         </a>
 </body>
 </html>

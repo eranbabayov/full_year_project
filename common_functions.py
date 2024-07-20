@@ -1,12 +1,13 @@
 import pymssql
-import os
 import time
-from dotenv import load_dotenv
 from flask import flash
 from app_configuration import *
 from flask_mail import Message
 import hashlib
 import logging
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
 
 load_dotenv()
 password = os.getenv('MSSQL_SA_PASSWORD')
@@ -242,8 +243,9 @@ def insert_new_grade(user_id: int, grade: int) -> None:
         else:
             cursor.execute(
                 '''INSERT INTO last_games_grade (userID, score1, score2, score3, score4, score5)
-                   VALUES (%s, %s, NULL, NULL, NULL, NULL)''', (user_id, grade))
+                   VALUES (%s, NULL, NULL, NULL, NULL, %s)''', (user_id, grade))
         conn.commit()
+
 
 def initialize_game_grade_session_as_dictionary(session):
     if 'game_grade' not in session:
@@ -265,6 +267,32 @@ def finish_game(session) -> int:
     final_grade = int(final_grade)
     insert_new_grade(user_id=session['userID'], grade=final_grade)
     return final_grade
+
+
+def get_summarise_user_info(user_id):
+    with conn.cursor() as cursor:
+        cursor.execute(
+            '''SELECT score1, score2, score3, score4, score5
+               FROM last_games_grade
+               WHERE userID = %s''', (user_id,))
+        user_scores = cursor.fetchone()
+
+        cursor.execute(
+            '''SELECT score1, score2, score3, score4, score5
+               FROM last_games_grade
+               WHERE userID != %s''', (user_id,))
+        other_users_scores = cursor.fetchall()
+
+    return user_scores, other_users_scores
+
+
+def plot_to_img():
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    plt.close()
+    return img_base64
 
 
 if __name__ == '__main__':
