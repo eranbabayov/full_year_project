@@ -8,6 +8,7 @@
     <script>
     var submissionCount = 0;
     var chooseCorrection = 0;
+    var selectedCorrectionIndex = null;  // To store the index of the selected correction
 
     function detectError(challengeID) {
         if (submissionCount > 0) {
@@ -55,16 +56,28 @@
         return detectErrorResult;
     }
 
-    function openTextBox(challengeID, text) {
+    function openTextBox(challengeID, text, index) {
+        console.log("openTextBox called with challengeID:", challengeID, "and text:", text);  // Debugging log
         const formattedText = text.replace(/&#10;/g, '\n').replace(/&nbsp;/g, ' ');
         document.getElementById('answerText' + challengeID).innerHTML = "<pre><code>" + formattedText + "</code></pre>";
+        selectedCorrectionIndex = index
     }
 
-    function submitCorrection(challengeID, correctness) {
+    function submitCorrection(challengeID) {
+        if (selectedCorrectionIndex === null) {
+            alert("Please select a correction before submitting.");
+            return;
+        }
+
         if (chooseCorrection > 0) {
             alert("You have already submitted your answer for this challenge.");
             return;
         }
+
+        // Retrieve the chosen solution's correctness
+        const selectedSolution = document.querySelector(`button[data-index="${selectedCorrectionIndex}"]`);
+        const correctness = selectedSolution.getAttribute('data-correctness');
+
         let message = "";
         let user_grade = 0;
         if (correctness === 'correct') {
@@ -118,15 +131,15 @@
                 <h2>Choose the best correction:</h2>
                 <div class="Correction_options">
                     {% for solution in solutions %}
-                        <button data-text="{{ solution['text'] | replace('\n', '&#10;') | replace(' ', '&nbsp;') }}"
-                                onclick="openTextBox('{{ challenge['challengeID'] }}', this.getAttribute('data-text'));">
-                            {{ solution['solutionID'] }}
-                        </button>
-                        <button onclick="submitCorrection('{{ challenge['challengeID'] }}', '{{ solution['correctness'] }}')">
-                            Submit Correction
+                        <button data-index="{{ loop.index }}"
+                                data-correctness="{{ solution['correctness'] }}"
+                                data-text="{{ solution['text'] | replace('\n', '&#10;') | replace(' ', '&nbsp;') }}"
+                                onclick="openTextBox('{{ challenge['challengeID'] }}', this.getAttribute('data-text'), {{loop.index}});">
+                            {{ loop.index }}
                         </button>
                     {% endfor %}
                 </div>
+                <button onclick="submitCorrection('{{ challenge['challengeID'] }}')" style="width: 150px; height: 30px; margin-top: 10px;">Submit Correction</button>
                 <div id="correctionFeedback{{ challenge['challengeID'] }}"></div>
             </div>
         </div>

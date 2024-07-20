@@ -129,6 +129,7 @@ def user_dashboard(name):
 def start_game(challenge_id):
     challenge_data = get_challenges_based_to_challenge_id(challenge_id)
     solutions_data = get_solutions_based_to_challenge_id(challenge_id)
+    random.shuffle(solutions_data)
     if not challenge_data or not solutions_data:
         return "Challenge or solutions not found", 404
     return render_template('questions_answers.html', challenge=challenge_data, solutions=solutions_data)
