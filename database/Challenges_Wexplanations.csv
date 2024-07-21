@@ -430,7 +430,7 @@ if __name__ == '__main__':
     app.run()
 ",6,No logging for account deletion attempts.
 ,,,,
-27,Server-Side Request Forgery (SSRF),"
+27,Server-Side Request Forgery,"
 import requests
 from flask import Flask, request, jsonify
 
@@ -446,7 +446,7 @@ if __name__ == '__main__':
     app.run()
 ",7,SSRF due to uncontrolled URL input.
 ,,,,
-28,Server-Side Request Forgery (SSRF),"
+28,Server-Side Request Forgery,"
 import requests
 from flask import Flask, request, jsonify
 
@@ -462,7 +462,7 @@ if __name__ == '__main__':
     app.run()
 ",7,SSRF due to uncontrolled URL input.
 ,,,,
-29,Server-Side Request Forgery (SSRF),"
+29,Server-Side Request Forgery,"
 import requests
 from flask import Flask, request, jsonify
 

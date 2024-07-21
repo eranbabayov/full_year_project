@@ -125,40 +125,51 @@ def user_dashboard(name):
     return render_template('user_dashboard.html', username=name)
 
 
-@app.route('/challenge/<int:challenge_id>')
-def start_game(challenge_id):
-    challenge_data = get_challenges_based_to_challenge_id(challenge_id)
-    solutions_data = get_solutions_based_to_challenge_id(challenge_id)
-    random.shuffle(solutions_data)
-    if not challenge_data or not solutions_data:
-        return "Challenge or solutions not found", 404
-    return render_template('questions_answers.html', challenge=challenge_data, solutions=solutions_data)
+@app.route('/challenge')
+def start_game():
+    available_questions = session.get('available_questions')
+    if available_questions:
+        available_questions = json.loads(available_questions)
+    return render_template('questions_answers.html', available_questions=available_questions)
 
 
-@app.route('/game')
+@app.route('/game', methods=['POST'])
 def call_game():
-    challenge_id = 0
-    return redirect(url_for('start_game', challenge_id=challenge_id))
+    selected_categories = request.form.get('selectedCategories', '')
+    categories_list = selected_categories.split(',')
+    available_questions = get_questions_and_solutions_based_to_categories_list(categories_list)
+    # Print categories to the console
+    logging.debug("Chosen categories: %s", categories_list)
+    logging.debug("##################################################")
+
+    logging.debug("available_questions: %s", available_questions)
+    logging.debug("available_questions[0]: %s", available_questions[0])
+    logging.debug("##################################################")
+
+    # Store available_questions in the session
+    session['available_questions'] = json.dumps(available_questions)
+
+    return redirect(url_for('start_game'))
 
 
-@app.route('/next/<int:current_id>')
-def next_challenge(current_id):
-    detect_error_result = request.args.get('detect_error_result',default=0, type=int)
-    submit_correction_result = request.args.get('submit_correction_result', default=0, type=int)
-
-    # Initialize session['game_grade'] as a dictionary if it doesn't exist
-    initialize_game_grade_session_as_dictionary(session)
-
-    # Add new entry to the dictionary without overwriting the entire dictionary
-    game_grade = session['game_grade']
-    game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
-    session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
-
-    if current_id > 2:
-        grade = finish_game(session=session)
-        return redirect(url_for('game_finish', grade=grade))
-    next_id = current_id + 1
-    return redirect(url_for('start_game', challenge_id=next_id))
+# @app.route('/next/<int:current_id>')
+# def next_challenge(current_id):
+#     detect_error_result = request.args.get('detect_error_result',default=0, type=int)
+#     submit_correction_result = request.args.get('submit_correction_result', default=0, type=int)
+#
+#     # Initialize session['game_grade'] as a dictionary if it doesn't exist
+#     initialize_game_grade_session_as_dictionary(session)
+#
+#     # Add new entry to the dictionary without overwriting the entire dictionary
+#     game_grade = session['game_grade']
+#     game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
+#     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
+#
+#     if current_id > 2:
+#         grade = finish_game(session=session)
+#         return redirect(url_for('game_finish', grade=grade))
+#     next_id = current_id + 1
+#     return redirect(url_for('start_game', challenge_id=next_id))
 
 
 @app.route('/set_new_pwd', methods=['GET', 'POST'])
@@ -244,7 +255,8 @@ def password_reset():
     else:
         return render_template('password_reset.html')
 
-@app.route('/game_finish')
+
+@app.route('/game_finish',methods=['POST'])
 def game_finish():
     grade = request.args.get('grade')
     return render_template('game_finish.html', username=session.get("username"), grade=grade)

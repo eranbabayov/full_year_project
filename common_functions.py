@@ -8,6 +8,7 @@ import logging
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
+import random
 
 load_dotenv()
 password = os.getenv('MSSQL_SA_PASSWORD')
@@ -224,6 +225,24 @@ def get_solutions_based_to_challenge_id(challenge_id: int) -> dict:
             "SELECT * FROM solutions WHERE challengeID = %s", (challenge_id,))
         return cursor.fetchall()
 
+
+def get_questions_and_solutions_based_to_categories_list(categories_list: list) -> list[tuple]:
+    # Generate a random category from the categories list
+    available_questions = []
+    with conn.cursor(as_dict=True) as cursor:
+        for category in categories_list:
+            # Retrieve a random question from the chosen category
+            cursor.execute(
+                "SELECT * FROM Challenges WHERE category = %s", (category,))
+
+            results = cursor.fetchall()
+
+            # select a random challenge from all the challenges
+            random_challenge = random.choice(results)
+            solution = get_solutions_based_to_challenge_id(random_challenge['challengeID'])
+            available_questions.append((random_challenge, solution))
+    available_questions = random.choice(available_questions)
+    return available_questions
 
 def insert_new_grade(user_id: int, grade: int) -> None:
     with conn.cursor() as cursor:

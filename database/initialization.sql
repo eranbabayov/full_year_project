@@ -53,7 +53,7 @@ CREATE TABLE password_history (
 );
 GO
 
-CREATE TABLE category1_scores (
+CREATE TABLE broken_access_control_score (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,
@@ -64,7 +64,7 @@ CREATE TABLE category1_scores (
 );
 GO
 
-CREATE TABLE category2_scores (
+CREATE TABLE  cryptographic_failures_scores (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,
@@ -75,7 +75,7 @@ CREATE TABLE category2_scores (
 );
 GO
 
-CREATE TABLE category3_scores (
+CREATE TABLE injection_scores (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,
@@ -86,7 +86,7 @@ CREATE TABLE category3_scores (
 );
 GO
 
-CREATE TABLE category4_scores (
+CREATE TABLE insecure_design_scores (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,
@@ -97,7 +97,7 @@ CREATE TABLE category4_scores (
 );
 GO
 
-CREATE TABLE category5_scores (
+CREATE TABLE security_misconfiguration_scores (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,
@@ -107,7 +107,55 @@ CREATE TABLE category5_scores (
     FOREIGN KEY (userID) REFERENCES user_scores(userID)
 );
 GO
-
+CREATE TABLE vulnerable_and_outdates_components_scores (
+    userID INT PRIMARY KEY,
+    score1 INT,
+    score2 INT,
+    score3 INT,
+    score4 INT,
+    score5 INT,
+    FOREIGN KEY (userID) REFERENCES user_scores(userID)
+);
+CREATE TABLE identification_and_authentication_failures_scores (
+    userID INT PRIMARY KEY,
+    score1 INT,
+    score2 INT,
+    score3 INT,
+    score4 INT,
+    score5 INT,
+    FOREIGN KEY (userID) REFERENCES user_scores(userID)
+);
+GO
+CREATE TABLE software_and_data_integrity_failures_scores (
+    userID INT PRIMARY KEY,
+    score1 INT,
+    score2 INT,
+    score3 INT,
+    score4 INT,
+    score5 INT,
+    FOREIGN KEY (userID) REFERENCES user_scores(userID)
+);
+GO
+CREATE TABLE security_logging_and_monitoring_failures_scores (
+    userID INT PRIMARY KEY,
+    score1 INT,
+    score2 INT,
+    score3 INT,
+    score4 INT,
+    score5 INT,
+    FOREIGN KEY (userID) REFERENCES user_scores(userID)
+);
+GO
+CREATE TABLE server_side_request_forgery_scores (
+    userID INT PRIMARY KEY,
+    score1 INT,
+    score2 INT,
+    score3 INT,
+    score4 INT,
+    score5 INT,
+    FOREIGN KEY (userID) REFERENCES user_scores(userID)
+);
+GO
 CREATE TABLE last_games_grade (
     userID INT PRIMARY KEY,
     score1 INT,
