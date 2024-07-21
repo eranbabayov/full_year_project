@@ -30,7 +30,6 @@ while True:
             "SecurityPerformance")
         break
     except pymssql.OperationalError:
-        print("Failed to connect")
         time.sleep(1)
 
 cursor = conn.cursor()

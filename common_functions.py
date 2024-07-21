@@ -22,7 +22,6 @@ while True:
             "SecurityPerformance")
         break
     except pymssql.OperationalError:
-        print("unable to connect")
         time.sleep(1)
 
 conn = pymssql.connect("172.17.0.1", "sa", password, "SecurityPerformance")
@@ -226,7 +225,7 @@ def get_solutions_based_to_challenge_id(challenge_id: int) -> dict:
         return cursor.fetchall()
 
 
-def get_questions_and_solutions_based_to_categories_list(categories_list: list) -> list[tuple]:
+def get_questions_and_solutions_based_to_categories_list(categories_list: list) -> list[tuple] | None:
     # Generate a random category from the categories list
     available_questions = []
     with conn.cursor(as_dict=True) as cursor:
@@ -236,13 +235,14 @@ def get_questions_and_solutions_based_to_categories_list(categories_list: list) 
                 "SELECT * FROM Challenges WHERE category = %s", (category,))
 
             results = cursor.fetchall()
-
+            if not results:
+                return None
             # select a random challenge from all the challenges
             random_challenge = random.choice(results)
             solution = get_solutions_based_to_challenge_id(random_challenge['challengeID'])
             available_questions.append((random_challenge, solution))
-    available_questions = random.choice(available_questions)
     return available_questions
+
 
 def insert_new_grade(user_id: int, grade: int) -> None:
     with conn.cursor() as cursor:
@@ -274,13 +274,9 @@ def initialize_game_grade_session_as_dictionary(session):
 
 
 def finish_game(session) -> int:
-    number_of_answer_questions = len(session['game_grade'].keys())
-    logging.debug("########################")
-    logging.debug(number_of_answer_questions)
     user_score = 0
     for score in session['game_grade'].values():
         user_score += score[0] + score[1]
-    logging.debug(f"user score is: {user_score}")
     total_possible = len(session['game_grade']) * 200
     final_grade = user_score / total_possible * 100 if total_possible > 0 else 0
     final_grade = int(final_grade)

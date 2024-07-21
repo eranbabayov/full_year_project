@@ -9,9 +9,6 @@
     var submissionCount = 0;
     var chooseCorrection = 0;
     var selectedCorrectionIndex = null;  // To store the index of the selected correction
-    var gameGrade = {};  // Object to store grades for each challenge
-    var currentChallengeIndex = 0;
-    var availableQuestions = {{ available_questions|tojson }};
 
     function detectError(challengeID) {
         if (submissionCount > 0) {
@@ -20,15 +17,16 @@
         }
 
         var inputRow = document.getElementById('q' + challengeID).value.trim();
-        var problematicRow = document.getElementById('problematicRow' + challengeID).innerText;
+        var problematicRow = "{{ challenge['problematic_row'] }}";
 
+        // Compare user input with the correct problematic row
         var user_answer = inputRow.split(',');
         var problematic_rows_from_database = problematicRow.split(',');
         var correct_rows = 0;
         var wrong_rows = 0;
 
         user_answer.forEach(function(answer) {
-            if (problematic_rows_from_database.includes(answer.trim())) {
+            if (problematic_rows_from_database.includes(answer)) {
                 correct_rows++;
             } else {
                 wrong_rows++;
@@ -44,21 +42,25 @@
             document.getElementById('answerText' + challengeID).innerHTML = "<p style='color: red;'>Incorrect Answer.</p>";
         }
 
+        // Update hidden input field with the result
         document.getElementById('detectErrorResult').value = detectErrorResult;
+
+        // Show the answer box after submitting
         document.getElementById('answer-box' + challengeID).style.display = 'block';
+
+        // Disable the input field and submit button
         document.getElementById('q' + challengeID).disabled = true;
         document.querySelector('#code-box' + challengeID + ' button').disabled = true;
         submissionCount++;
-
-        gameGrade[challengeID] = [detectErrorResult, 0];
 
         return detectErrorResult;
     }
 
     function openTextBox(challengeID, text, index) {
+        console.log("openTextBox called with challengeID:", challengeID, "and text:", text);  // Debugging log
         const formattedText = text.replace(/&#10;/g, '\n').replace(/&nbsp;/g, ' ');
         document.getElementById('answerText' + challengeID).innerHTML = "<pre><code>" + formattedText + "</code></pre>";
-        selectedCorrectionIndex = index;
+        selectedCorrectionIndex = index
     }
 
     function submitCorrection(challengeID) {
@@ -72,11 +74,8 @@
             return;
         }
 
+        // Retrieve the chosen solution's correctness
         const selectedSolution = document.querySelector(`button[data-index="${selectedCorrectionIndex}"]`);
-        if (!selectedSolution) {
-            alert("No correction selected.");
-            return;
-        }
         const correctness = selectedSolution.getAttribute('data-correctness');
 
         let message = "";
@@ -93,90 +92,55 @@
         document.getElementById('correctionFeedback' + challengeID).innerHTML = message;
         chooseCorrection++;
 
+        // Update hidden input field with the result
         document.getElementById('submitCorrectionResult').value = user_grade;
-        gameGrade[challengeID][1] = user_grade;
 
         return user_grade;
     }
 
-    function goToNextChallenge() {
-        if (currentChallengeIndex < availableQuestions.length - 1) {
-            currentChallengeIndex++;
-            displayChallenge(currentChallengeIndex);
-        } else {
-            let totalGrade = 0;
-            let challengeCount = 0;
-            for (const key in gameGrade) {
-                totalGrade += gameGrade[key][0] + gameGrade[key][1];
-                challengeCount++;
-            }
-            const finalGrade = totalGrade / (challengeCount * 2);
+    function goToNextChallenge(challengeID) {
+        var detectErrorResult = document.getElementById('detectErrorResult').value;
+        var submitCorrectionResult = document.getElementById('submitCorrectionResult').value;
 
-            document.getElementById('finalGrade').value = finalGrade;
-            document.getElementById('finishGameForm').submit();
-        }
+        window.location.href = "{{ url_for('next_challenge', current_id=challenge['challengeID']) }}" +
+                                "?detect_error_result=" + detectErrorResult +
+                                "&submit_correction_result=" + submitCorrectionResult;
     }
-
-    function displayChallenge(index) {
-        const challenge = availableQuestions[index];
-        console.log("Current Challenge Data:", challenge);
-        document.getElementById('challengeTitle').innerText = `${challenge.challengeID}. ${challenge.category}`;
-        document.getElementById('challengeText').innerText = challenge.text;
-        document.getElementById('problematicRow' + challenge.challengeID).innerText = challenge.problematic_row;
-        document.getElementById('q' + challenge.challengeID).value = '';
-        document.getElementById('q' + challenge.challengeID).disabled = false;
-        document.querySelector('#code-box' + challenge.challengeID + ' button').disabled = false;
-        document.getElementById('answer-box' + challenge.challengeID).style.display = 'none';
-        submissionCount = 0;
-        chooseCorrection = 0;
-        selectedCorrectionIndex = null;
-        document.getElementById('correctionFeedback' + challenge.challengeID).innerHTML = '';
-
-        const solutionsContainer = document.querySelector(`#code-box${challenge.challengeID} .Correction_options`);
-        solutionsContainer.innerHTML = '';
-
-        challenge.solutions.forEach(function(solution, index) {
-            const button = document.createElement('button');
-            button.setAttribute('data-index', index);
-            button.setAttribute('data-correctness', solution.correctness);
-            button.setAttribute('data-text', solution.text.replace(/\n/g, '&#10;').replace(/ /g, '&nbsp;'));
-            button.innerText = `Option ${index + 1}`;
-            button.onclick = function() {
-                openTextBox(challenge.challengeID, this.getAttribute('data-text'), index);
-            };
-            solutionsContainer.appendChild(button);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        displayChallenge(currentChallengeIndex);
-    });
     </script>
 </head>
 <body>
 <div class="container">
     <div class="question">
-        <h2 id="challengeTitle"></h2>
-        <div class="box" id="code-box{{ available_questions[0].challengeID }}">
+        <h2>{{ challenge['challengeID'] }}. {{ challenge['category'] }}</h2>
+        <div class="box" id="code-box{{ challenge['challengeID'] }}">
             <h3>Identify the error in the code:</h3>
-            <pre><code id="challengeText"></code></pre>
+            <pre><code>{{ challenge['text'] }}</code></pre>
             <p>Enter row number:</p>
-            <input type="text" id="q{{ available_questions[0].challengeID }}" name="q{{ available_questions[0].challengeID }}" required>
-            <button onclick="detectError('{{ available_questions[0].challengeID }}')" style="width: 80px; height: 20px;">Submit</button>
+            <input type="text" id="q{{ challenge['challengeID'] }}" name="q{{ challenge['challengeID'] }}" required>
+            <button onclick="detectError('{{ challenge['challengeID'] }}')" style="width: 80px; height: 20px;">Submit</button>
         </div>
-        <div id="answer-box{{ available_questions[0].challengeID }}" class="answer-box" style="display: none;">
+        <div id="answer-box{{ challenge['challengeID'] }}" class="answer-box" style="display: none;">
             <div class="left-section">
                 <h2>The incorrect code line is:</h2>
-                <p id="problematicRow{{ available_questions[0].challengeID }}">{{ available_questions[0].problematic_row }}</p>
+                <p>{{ challenge['problematic_row'] }}</p>
             </div>
             <div class="right-section">
                 <h2>Feedback:</h2>
-                <div id="answerText{{ available_questions[0].challengeID }}"></div>
+                <div id="answerText{{ challenge['challengeID'] }}"></div>
                 <br><br>
                 <h2>Choose the best correction:</h2>
-                <div class="Correction_options"></div>
-                <button onclick="submitCorrection('{{ available_questions[0].challengeID }}')" style="width: 150px; height: 30px; margin-top: 10px;">Submit Correction</button>
-                <div id="correctionFeedback{{ available_questions[0].challengeID }}"></div>
+                <div class="Correction_options">
+                    {% for solution in solutions %}
+                        <button data-index="{{ loop.index }}"
+                                data-correctness="{{ solution['correctness'] }}"
+                                data-text="{{ solution['text'] | replace('\n', '&#10;') | replace(' ', '&nbsp;') }}"
+                                onclick="openTextBox('{{ challenge['challengeID'] }}', this.getAttribute('data-text'), {{loop.index}});">
+                            {{ loop.index }}
+                        </button>
+                    {% endfor %}
+                </div>
+                <button onclick="submitCorrection('{{ challenge['challengeID'] }}')" style="width: 150px; height: 30px; margin-top: 10px;">Submit Correction</button>
+                <div id="correctionFeedback{{ challenge['challengeID'] }}"></div>
             </div>
         </div>
         <br><br>
@@ -184,13 +148,8 @@
         <input type="hidden" id="detectErrorResult" value="">
         <input type="hidden" id="submitCorrectionResult" value="">
 
-        <button onclick="goToNextChallenge()" style="width: 80px; height: 20px;">Next</button>
+        <button onclick="goToNextChallenge('{{ challenge['challengeID'] }}')" style="width: 80px; height: 20px;">Next</button>
     </div>
-
-    <!-- Form to submit the final grade -->
-    <form id="finishGameForm" action="{{ url_for('game_finish') }}" method="post">
-        <input type="hidden" id="finalGrade" name="finalGrade" value="">
-    </form>
 </div>
 </body>
 </html>
