@@ -159,12 +159,25 @@ def next_challenge(current_id):
 
     # Add new entry to the dictionary without overwriting the entire dictionary
     logging.debug("#########################################")
-    logging.debug(session['available_questions'])
+    available_questions = json.loads(session.get('available_questions', '[]'))
+    logging.debug(available_questions[0])
+    logging.debug("#################################################################")
+
+    logging.debug(available_questions[0][0])
+    logging.debug("#################################################################")
+    logging.debug("#################################################################")
+    logging.debug("#################################################################")
+
+    logging.debug(available_questions[0][0]["category"])
+    single_category_grade = (detect_error_result + submit_correction_result) / 2
+    save_grade_based_to_category(user_id=session['userID'], grade=single_category_grade,
+                                 table_name=available_questions[0][0]['category'])
+
+
     game_grade = session['game_grade']
     game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
-    session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
 
-    available_questions = json.loads(session.get('available_questions', '[]'))
+    session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
     if available_questions:
         available_questions.pop(0)  # Remove the first question and its solutions
         session['available_questions'] = json.dumps(available_questions)

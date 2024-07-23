@@ -218,7 +218,7 @@ def get_challenges_based_to_challenge_id(challenge_id: int) -> dict:
         return cursor.fetchone()
 
 
-def get_solutions_based_to_challenge_id(challenge_id: int) -> dict:
+def get_solutions_based_to_challenge_id(challenge_id: int) -> list:
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(
             "SELECT * FROM solutions WHERE challengeID = %s", (challenge_id,))
@@ -240,6 +240,7 @@ def get_questions_and_solutions_based_to_categories_list(categories_list: list) 
             # select a random challenge from all the challenges
             random_challenge = random.choice(results)
             solution = get_solutions_based_to_challenge_id(random_challenge['challengeID'])
+            random.shuffle(solution)
             available_questions.append((random_challenge, solution))
     return available_questions
 
@@ -300,6 +301,46 @@ def get_summarise_user_info(user_id):
 
     return user_scores, other_users_scores
 
+
+def save_grade_based_to_category(user_id: int, grade: float, table_name: str) -> None:
+    with conn.cursor() as cursor:
+        # Sanitize the table name to prevent SQL injection
+        table_name = table_name.replace(" ", "_").lower() + "_scores"  # Example of simple sanitation
+        logging.debug("$$$$$$$$$$$$$$$$$$$44")
+        logging.debug(table_name)
+        logging.debug(f"grade: {grade} type: {type(grade)}")
+        logging.debug(f"user_id: {user_id} type: {type(user_id)}")
+
+        # Ensure that the table_name does not contain any disallowed characters
+        if not table_name.isidentifier():
+            raise ValueError("Invalid table name")
+
+        # Check if a record exists for the given user in the specified category table
+        cursor.execute(
+            f'''SELECT score1, score2, score3, score4, score5
+                FROM {table_name}
+                WHERE userID = %s''', (user_id,)
+        )
+        result = cursor.fetchone()
+
+        if result:
+            # Shift scores and insert the new grade
+            score1, score2, score3, score4, score5 = result
+            cursor.execute(
+                f'''UPDATE {table_name}
+                   SET score1 = %s, score2 = %s, score3 = %s, score4 = %s, score5 = %s
+                   WHERE userID = %s''',
+                (score2, score3, score4, score5, grade, user_id)
+            )
+        else:
+            # Insert a new record if none exists
+            cursor.execute(
+                f'''INSERT INTO {table_name} (userID, score1, score2, score3, score4, score5)
+                   VALUES (%s, NULL, NULL, NULL, NULL, %s)''',
+                (user_id, grade)
+            )
+
+        conn.commit()
 
 def plot_to_img():
     buf = BytesIO()

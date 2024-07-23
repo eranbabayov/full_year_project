@@ -53,7 +53,7 @@ CREATE TABLE password_history (
 );
 GO
 
-CREATE TABLE broken_access_control_score (
+CREATE TABLE broken_access_control_scores (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,
