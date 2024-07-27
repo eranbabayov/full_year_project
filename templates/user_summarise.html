@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Quiz</title>
+    <title>Security Quiz Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='website1.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>{{ username }} games summary</h1>
+        <h1>{{ username }}'s Dashboard</h1>
 
         <a href="{{ url_for('logout') }}">
             <button type="submit">Logout</button>
@@ -20,9 +20,10 @@
         </a>
         <br><br>
 
-        <h2>User final scores: {{ user_scores }}</h2>
-        <h2>Your average score: {{ user_avg_score }}</h2>
-        <h2>Your rank: {{ user_rank }}</h2>
+        <h2>Your Summary</h2>
+        <p><strong>Your final scores:</strong> {{ user_scores }}</p>
+        <p><strong>Your average score:</strong> {{ user_avg_score }}</p>
+        <p><strong>Your rank:</strong> {{ user_rank }}</p>
 
         <h3>Your Scores Plot:</h3>
         <img src="data:image/png;base64,{{ user_scores_plot }}" alt="User Scores Plot">
@@ -30,12 +31,11 @@
         <h3>Average Scores Distribution:</h3>
         <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="Average Scores Plot">
 
-        <!-- New plots for each category -->
-        {% for category, user_scores_plot, avg_scores_plot in category_plots %}
-        <h3>{{ category }} Scores:</h3>
-        <img src="data:image/png;base64,{{ user_scores_plot }}" alt="{{ category }} User Scores Plot">
-        <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="{{ category }} Average Scores Plot">
-        {% endfor %}
+        <h3>Category Statistics:</h3>
+        {% for category, plot in category_plots %}
+            <h4>{{ category }}</h4>
+            <h5>Your Scores:</h5>
+            <img src="data:image/png;base64,{{ plot }}" alt="Your Scores in {{ category }}">{% endfor %}
     </div>
 </body>
 </html>

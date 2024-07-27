@@ -300,9 +300,9 @@ def user_summarise():
         category_plots = []
         for category in categories:
             cat_user_scores, cat_other_users_scores = get_category_scores(user_id, category)
-            cat_user_scores_plot, cat_avg_scores_plot = plot_category_scores(category, cat_user_scores,
-                                                                             cat_other_users_scores)
-            category_plots.append((category.replace('_', ' ').title(), cat_user_scores_plot, cat_avg_scores_plot))
+            if cat_user_scores:
+                cat_user_scores_plot = plot_category_scores(category, cat_user_scores, cat_other_users_scores)
+                category_plots.append((category.replace('_', ' ').title(), cat_user_scores_plot))
 
         return render_template(
             'user_summarise.html',
@@ -314,6 +314,7 @@ def user_summarise():
             avg_scores_plot=avg_scores_plot,
             category_plots=category_plots
         )
+
 
 
 

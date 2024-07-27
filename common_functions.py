@@ -301,20 +301,21 @@ def get_summarise_user_info(user_id):
 
 
 def plot_category_scores(category, user_scores, other_users_scores):
+    # Create a figure and a grid of subplots
+    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+
     # Plot user scores
-    plt.figure(figsize=(10, 5))
     if user_scores:
-        plt.plot(user_scores, marker='o', label='Your Scores')
-        plt.title(f'Your Scores in {category}')
-        plt.xlabel('Attempts')
-        plt.ylabel('Scores')
-        plt.legend()
+        axs[0].plot(user_scores, marker='o', label='Your Scores')
+        axs[0].set_title(f'Your Scores in {category}')
+        axs[0].set_xlabel('Attempts')
+        axs[0].set_ylabel('Scores')
+        axs[0].legend()
     else:
-        plt.text(0.5, 0.5, 'You haven\'t played yet', horizontalalignment='center', verticalalignment='center')
-        plt.title(f'Your Scores in {category}')
-        plt.xlabel('Attempts')
-        plt.ylabel('Scores')
-    user_scores_plot = plot_to_img()
+        axs[0].text(0.5, 0.5, 'You haven\'t played yet', horizontalalignment='center', verticalalignment='center')
+        axs[0].set_title(f'Your Scores in {category}')
+        axs[0].set_xlabel('Attempts')
+        axs[0].set_ylabel('Scores')
 
     # Calculate averages for other users
     other_users_avg_scores = []
@@ -325,27 +326,30 @@ def plot_category_scores(category, user_scores, other_users_scores):
                 other_users_avg_scores.append(sum(filtered_scores) / len(filtered_scores))
 
     # Plot average scores distribution
-    plt.figure(figsize=(10, 5))
     if other_users_avg_scores:
         user_avg_score = calculate_average(user_scores)
         min_avg_score = min(other_users_avg_scores + [user_avg_score])
         max_avg_score = max(other_users_avg_scores + [user_avg_score])
-        bins = range(int(min_avg_score), int(max_avg_score) + 2)  # Ensure each score gets its own bin
+        bins = max(10, int(max_avg_score - min_avg_score + 1))  # At least 10 bins
 
-        plt.hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users', density=True)
-        plt.axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
-        plt.title(f'Average Scores Distribution in {category}')
-        plt.xlabel('Average Score')
-        plt.ylabel('Density')
-        plt.legend()
+        axs[1].hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users', density=True)
+        axs[1].axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
+        axs[1].set_title(f'Average Scores Distribution in {category}')
+        axs[1].set_xlabel('Average Score')
+        axs[1].set_ylabel('Density')
+        axs[1].legend()
     else:
-        plt.text(0.5, 0.5, 'No scores from other users', horizontalalignment='center', verticalalignment='center')
-        plt.title(f'Average Scores Distribution in {category}')
-        plt.xlabel('Average Score')
-        plt.ylabel('Density')
-    avg_scores_plot = plot_to_img()
+        axs[1].text(0.5, 0.5, 'No scores from other users', horizontalalignment='center', verticalalignment='center')
+        axs[1].set_title(f'Average Scores Distribution in {category}')
+        axs[1].set_xlabel('Average Score')
+        axs[1].set_ylabel('Density')
 
-    return user_scores_plot, avg_scores_plot
+    # Convert the figure to a base64 image
+    plt.tight_layout()
+    img_str = plot_to_img()
+    plt.close(fig)
+
+    return img_str
 
 
 def get_category_scores(user_id, category):
@@ -401,17 +405,20 @@ def save_grade_based_to_category(user_id: int, grade: float, table_name: str) ->
 
         conn.commit()
 
+
 def calculate_average(scores):
     if not scores:
         return 0
     filtered_scores = [score for score in scores if score is not None]
     return sum(filtered_scores) / len(filtered_scores) if filtered_scores else 0
 
+
 def calculate_user_rank(user_avg_score, other_users_avg_scores):
     if not other_users_avg_scores:
         return "N/A"
     all_avg_scores = other_users_avg_scores + [user_avg_score]
     return sorted(all_avg_scores, reverse=True).index(user_avg_score) + 1
+
 
 def plot_scores(scores):
     plt.figure(figsize=(10, 5))
@@ -428,12 +435,13 @@ def plot_scores(scores):
         plt.ylabel('Scores')
     return plot_to_img()
 
+
 def plot_avg_scores_distribution(user_avg_score, other_users_avg_scores):
     plt.figure(figsize=(10, 5))
     if other_users_avg_scores:
         min_avg_score = min(other_users_avg_scores + [user_avg_score])
         max_avg_score = max(other_users_avg_scores + [user_avg_score])
-        bins = range(int(min_avg_score), int(max_avg_score) + 2)  # Ensure each score gets its own bin
+        bins = max(10, int(max_avg_score - min_avg_score + 1))  # At least 10 bins
         plt.hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users')
         plt.axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
         plt.title('Average Scores Distribution')
@@ -446,6 +454,7 @@ def plot_avg_scores_distribution(user_avg_score, other_users_avg_scores):
         plt.xlabel('Average Score')
         plt.ylabel('Number of Users')
     return plot_to_img()
+
 
 def plot_to_img():
     buf = BytesIO()
