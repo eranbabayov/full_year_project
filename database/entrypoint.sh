@@ -18,6 +18,9 @@ if /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U SA -P ${MSSQL_SA_PASSWORD} -Q "SE
 else
   echo "Database has not been initialized. Initializing database..."
     /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U SA -P ${MSSQL_SA_PASSWORD} -d master -i initialization.sql
+    echo "Running Python script..."
+    python3 create_table.py
+
 fi
 # Print the tables created in the SecurityPerformance database
 echo "Tables created in the SecurityPerformance database:"
