@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/mssql/server:2022-latest
+FROM mcr.microsoft.com/mssql/rhel/server:2022-CU12-rhel-8.7
 
 USER root
 
