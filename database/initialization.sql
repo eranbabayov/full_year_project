@@ -107,7 +107,7 @@ CREATE TABLE security_misconfiguration_scores (
     FOREIGN KEY (userID) REFERENCES user_scores(userID)
 );
 GO
-CREATE TABLE vulnerable_and_outdates_components_scores (
+CREATE TABLE vulnerable_and_outdated_components_scores (
     userID INT PRIMARY KEY,
     score1 INT,
     score2 INT,

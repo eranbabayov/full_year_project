@@ -248,7 +248,7 @@ if __name__ == '__main__':
     app.run()
 ",6,Saves uploaded files without validation.
 ,,,,
-15,Vulnerable and Outdates Components,"
+15,Vulnerable and Outdated Components,"
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -261,7 +261,7 @@ if __name__ == '__main__':
     app.run()
 ",5,The application uses an outdated version of Flask which has known security vulnerabilities.
 ,,,,
-16,Vulnerable and Outdates Components,"
+16,Vulnerable and Outdated Components,"
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     app.run()
 ",5,The application uses an outdated version of a critical library which has known security vulnerabilities.
 ,,,,
-17,Vulnerable and Outdates Components,"
+17,Vulnerable and Outdated Components,"
 from flask import Flask, jsonify
 
 app = Flask(__name__)

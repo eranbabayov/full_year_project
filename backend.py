@@ -143,6 +143,9 @@ def start_game():
 def call_game():
     selected_categories = request.form.get('selectedCategories', '')
     categories_list = selected_categories.split(',')
+
+    # Initialize session['game_grade'] as a dictionary if it doesn't exist
+    initialize_game_grade_session_as_dictionary(session)
     session['chosen_categories_list'] = categories_list
     return redirect(url_for('start_game'))
 
@@ -152,19 +155,20 @@ def next_challenge(current_id):
     detect_error_result = request.args.get('detect_error_result', default=0, type=int)
     submit_correction_result = request.args.get('submit_correction_result', default=0, type=int)
 
-    # Initialize session['game_grade'] as a dictionary if it doesn't exist
-    initialize_game_grade_session_as_dictionary(session)
-
     # Add new entry to the dictionary without overwriting the entire dictionary
     chosen_categories_list = session.get('chosen_categories_list')
 
     single_category_grade = (detect_error_result + submit_correction_result) / 2
     save_grade_based_to_category(user_id=session['userID'], grade=single_category_grade,
                                  table_name=chosen_categories_list[0])
-
-
+    logging.debug("############################")
+    logging.debug(single_category_grade)
+    logging.debug("############################")
     game_grade = session['game_grade']
+    logging.debug(game_grade)
     game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
+    logging.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    logging.debug(game_grade)
 
     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
     if chosen_categories_list:
@@ -292,7 +296,7 @@ def user_summarise():
         # Generate category plots
         categories = [
             "broken_access_control_scores", "cryptographic_failures_scores", "injection_scores", "insecure_design_scores",
-            "security_misconfiguration_scores", "vulnerable_and_outdates_components_scores",
+            "security_misconfiguration_scores", "vulnerable_and_outdated_components_scores",
             "identification_and_authentication_failures_scores", "software_and_data_integrity_failures_scores",
             "security_logging_and_monitoring_failures_scores", "server_side_request_forgery_scores"
         ]

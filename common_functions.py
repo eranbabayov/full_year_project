@@ -266,10 +266,7 @@ def insert_new_grade(user_id: int, grade: int) -> None:
 
 
 def initialize_game_grade_session_as_dictionary(session):
-    if 'game_grade' not in session:
-        session['game_grade'] = {}
-    elif not isinstance(session['game_grade'], dict):
-        session['game_grade'] = {}
+    session['game_grade'] = {}
 
 
 def finish_game(session) -> int:

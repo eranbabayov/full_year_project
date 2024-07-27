@@ -31,11 +31,15 @@
         <h3>Average Scores Distribution:</h3>
         <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="Average Scores Plot">
 
-        <h3>Category Statistics:</h3>
-        {% for category, plot in category_plots %}
-            <h4>{{ category }}</h4>
-            <h5>Your Scores:</h5>
-            <img src="data:image/png;base64,{{ plot }}" alt="Your Scores in {{ category }}">{% endfor %}
+        {% if category_plots %}
+            <h3>Category Statistics:</h3>
+            {% for category, plot in category_plots %}
+                <h4>{{ category }}</h4>
+                <h5>Your Scores:</h5>
+                <img src="data:image/png;base64,{{ plot }}" alt="Your Scores in {{ category }}">
+            {% endfor %}
+        {% endif %}
+
     </div>
 </body>
 </html>

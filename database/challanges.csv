@@ -1,4 +1,5 @@
-challangeID,category,text,problematic_row
+challangeID,category,text,problematic_row
+
 0,Broken Access Control,"
 from flask import Flask, request, jsonify
 
@@ -13,7 +14,8 @@ def view_profile():
 
 if __name__ == '__main__':
     app.run()
-",8
+",8
+
 1,Broken Access Control,"
 from flask import Flask, request, jsonify
 
@@ -29,7 +31,8 @@ def update_role():
 
 if __name__ == '__main__':
     app.run()
-",9
+",9
+
 2,Cryptographic Failures,"
 from flask import Flask, request, jsonify
 
@@ -43,7 +46,8 @@ def encrypt():
 
 if __name__ == '__main__':
     app.run()
-",8
+",8
+
 3,Cryptographic Failures,"
 from flask import Flask, request, jsonify
 import hashlib
@@ -58,7 +62,8 @@ def hash_password():
 
 if __name__ == '__main__':
     app.run()
-",10
+",10
+
 4,Injection,"
 from flask import Flask, request, jsonify
 import sqlite3
@@ -78,7 +83,8 @@ def get_product():
 
 if __name__ == '__main__':
     app.run()
-",10
+",10
+
 5,Injection,"
 from flask import Flask, request, jsonify
 import mysql.connector
@@ -98,7 +104,8 @@ def get_order():
 
 if __name__ == '__main__':
     app.run()
-",11
+",11
+
 6,Insecure Design,"
 from flask import Flask, request, jsonify
 
@@ -122,7 +129,8 @@ def login():
 
 if __name__ == '__main__':
     app.run()
-",10
+",10
+
 7,Insecure Design,"
 from flask import Flask, request, jsonify
 
@@ -136,7 +144,8 @@ def update_profile():
 
 if __name__ == '__main__':
     app.run()
-",7
+",7
+
 8,Security Misconfiguration,"
 from flask import Flask
 
@@ -150,7 +159,8 @@ def index():
 
 if __name__ == '__main__':
     app.run()
-",4
+",4
+
 9,Security Misconfiguration,"
 from flask import Flask
 
@@ -164,7 +174,8 @@ def index():
 
 if __name__ == '__main__':
     app.run()
-",4
+",4
+
 10,Security Misconfiguration,"
 from flask import Flask
 
@@ -176,8 +187,9 @@ def index():
 
 if __name__ == '__main__':
     app.run()
-",8
-11,Vulnerable and Outdates Components,"
+",8
+
+11,Vulnerable and Outdated Components,"
 from flask import Flask, request, jsonify
 import requests
 
@@ -191,8 +203,9 @@ def proxy_request():
 
 if __name__ == '__main__':
     app.run()
-",4
-12,Vulnerable and Outdates Components,"
+",4
+
+12,Vulnerable and Outdated Components,"
 from flask import Flask, request, jsonify
 import jwt
 
@@ -206,8 +219,9 @@ def generate_token():
 
 if __name__ == '__main__':
     app.run()
-",4
-13,Vulnerable and Outdates Components,"
+",4
+
+13,Vulnerable and Outdated Components,"
 from flask import Flask
 import yaml
 
@@ -221,7 +235,8 @@ def load_config():
 
 if __name__ == '__main__':
     app.run()
-",4
+",4
+
 14,Identification and Authentication Failures,"
 from flask import Flask, request, jsonify
 
@@ -242,7 +257,8 @@ def login():
 
 if __name__ == '__main__':
     app.run()
-",5
+",5
+
 15,Identification and Authentication Failures,"
 from flask import Flask, request, jsonify
 
@@ -263,7 +279,8 @@ def admin_login():
 
 if __name__ == '__main__':
     app.run()
-",5
+",5
+
 16,Identification and Authentication Failures,"
 from flask import Flask, request, jsonify
 
@@ -285,7 +302,8 @@ def change_password():
 
 if __name__ == '__main__':
     app.run()
-",5
+",5
+
 17,Software and Data Integrity Failures,"
 from flask import Flask, request, jsonify
 import subprocess
@@ -301,7 +319,8 @@ def run_command():
 
 if __name__ == '__main__':
     app.run()
-",7
+",7
+
 18,Software and Data Integrity Failures,"
 from flask import Flask, request, jsonify
 
@@ -316,7 +335,8 @@ def update_data():
 
 if __name__ == '__main__':
     app.run()
-",7
+",7
+
 19,Software and Data Integrity Failures,"
 from flask import Flask, request, jsonify
 
@@ -333,7 +353,8 @@ def restore_data():
 
 if __name__ == '__main__':
     app.run()
-",7
+",7
+
 20,Security Logging and Monitoring Failures,"
 from flask import Flask, request, jsonify
 
@@ -351,7 +372,8 @@ def login():
 
 if __name__ == '__main__':
     app.run()
-",12
+",12
+
 21,Security Logging and Monitoring Failures,"
 from flask import Flask, request, jsonify
 
@@ -368,7 +390,8 @@ def transfer():
 
 if __name__ == '__main__':
     app.run()
-",8
+",8
+
 22,Security Logging and Monitoring Failures,"
 from flask import Flask, request, jsonify
 
@@ -382,7 +405,8 @@ def data_access():
 
 if __name__ == '__main__':
     app.run()
-",6
+",6
+
 23,Server-Side Request Forgery (SSRF),"
 from flask import Flask, request, jsonify
 import requests
@@ -398,7 +422,8 @@ def fetch_data():
 
 if __name__ == '__main__':
     app.run()
-",8
+",8
+
 24,Server-Side Request Forgery (SSRF),"
 from flask import Flask, request, jsonify
 import requests
@@ -414,7 +439,8 @@ def proxy():
 
 if __name__ == '__main__':
     app.run()
-",8
+",8
+
 25,Server-Side Request Forgery (SSRF),"
 from flask import Flask, request, jsonify
 import requests
@@ -430,4 +456,5 @@ def fetch_content():
 
 if __name__ == '__main__':
     app.run()
-",8
+",8
+
