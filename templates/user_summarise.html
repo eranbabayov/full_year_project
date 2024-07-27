@@ -29,6 +29,13 @@
 
         <h3>Average Scores Distribution:</h3>
         <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="Average Scores Plot">
+
+        <!-- New plots for each category -->
+        {% for category, user_scores_plot, avg_scores_plot in category_plots %}
+        <h3>{{ category }} Scores:</h3>
+        <img src="data:image/png;base64,{{ user_scores_plot }}" alt="{{ category }} User Scores Plot">
+        <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="{{ category }} Average Scores Plot">
+        {% endfor %}
     </div>
 </body>
 </html>

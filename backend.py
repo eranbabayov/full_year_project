@@ -127,13 +127,15 @@ def user_dashboard(name):
 
 @app.route('/challenge')
 def start_game():
-    available_questions = session.get('available_questions')
-    if available_questions:
-        available_questions = json.loads(available_questions)
-        if available_questions:
-            current_challenge = available_questions[0]
-            logging.debug(current_challenge)
-            return render_template('questions_answers.html', challenge=current_challenge[0], solutions=current_challenge[1])
+    chosen_categories_list = session.get('chosen_categories_list')
+    if chosen_categories_list:
+        logging.debug(chosen_categories_list[0])
+        current_challenge, current_solution = get_questions_and_solutions_based_to_categories_list(chosen_categories_list[0])
+        session['chosen_categories_list'] = chosen_categories_list
+        logging.debug(current_challenge)
+        logging.debug(current_solution)
+
+        return render_template('questions_answers.html', challenge=current_challenge, solutions=current_solution)
     return redirect(url_for('call_game'))
 
 
@@ -141,11 +143,7 @@ def start_game():
 def call_game():
     selected_categories = request.form.get('selectedCategories', '')
     categories_list = selected_categories.split(',')
-    available_questions = get_questions_and_solutions_based_to_categories_list(categories_list)
-    if not available_questions:
-        return render_template('user_dashboard.html', username=session.get("username"))
-    # Store available_questions in the session
-    session['available_questions'] = json.dumps(available_questions)
+    session['chosen_categories_list'] = categories_list
     return redirect(url_for('start_game'))
 
 
@@ -158,31 +156,22 @@ def next_challenge(current_id):
     initialize_game_grade_session_as_dictionary(session)
 
     # Add new entry to the dictionary without overwriting the entire dictionary
-    logging.debug("#########################################")
-    available_questions = json.loads(session.get('available_questions', '[]'))
-    logging.debug(available_questions[0])
-    logging.debug("#################################################################")
+    chosen_categories_list = session.get('chosen_categories_list')
 
-    logging.debug(available_questions[0][0])
-    logging.debug("#################################################################")
-    logging.debug("#################################################################")
-    logging.debug("#################################################################")
-
-    logging.debug(available_questions[0][0]["category"])
     single_category_grade = (detect_error_result + submit_correction_result) / 2
     save_grade_based_to_category(user_id=session['userID'], grade=single_category_grade,
-                                 table_name=available_questions[0][0]['category'])
+                                 table_name=chosen_categories_list[0])
 
 
     game_grade = session['game_grade']
     game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
 
     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
-    if available_questions:
-        available_questions.pop(0)  # Remove the first question and its solutions
-        session['available_questions'] = json.dumps(available_questions)
+    if chosen_categories_list:
+        chosen_categories_list.pop(0)  # Remove the answered subject
+        session['chosen_categories_list'] = chosen_categories_list
 
-    if not available_questions:
+    if not chosen_categories_list:
         grade = finish_game(session=session)
         return redirect(url_for('game_finish', grade=grade))
 
@@ -282,69 +271,48 @@ def game_finish():
 @app.route('/summarise')
 def user_summarise():
     if request.method == "GET":
-        user_scores, other_users_scores = get_summarise_user_info(session['userID'])
+        user_id = session['userID']
+        username = session['username']
 
-        # Filter out None values and calculate user average score
-        scores = [score for score in user_scores if score is not None] if user_scores else []
-        user_avg_score = sum(scores) / len(scores) if scores else 0
+        user_scores, other_users_scores = get_summarise_user_info(user_id)
+
+        # Calculate user average score
+        user_avg_score = calculate_average(user_scores)
 
         # Calculate other users' average scores
-        other_users_avg_scores = []
-        if other_users_scores:
-            for scores in other_users_scores:
-                filtered_scores = [score for score in scores if score is not None]
-                if filtered_scores:
-                    other_users_avg_scores.append(sum(filtered_scores) / len(filtered_scores))
+        other_users_avg_scores = [calculate_average(scores) for scores in other_users_scores]
 
         # Calculate user rank
-        if other_users_avg_scores:
-            all_avg_scores = other_users_avg_scores + [user_avg_score]
-            user_rank = sorted(all_avg_scores, reverse=True).index(user_avg_score) + 1
-        else:
-            user_rank = "N/A"
+        user_rank = calculate_user_rank(user_avg_score, other_users_avg_scores)
 
-        # Create user scores plot
-        plt.figure(figsize=(10, 5))
-        if user_scores:
-            plt.plot(user_scores, marker='o', label='Your Scores')
-            plt.title('Your Last 5 Game Scores')
-            plt.xlabel('Games')
-            plt.ylabel('Scores')
-            plt.legend()
-        else:
-            plt.text(0.5, 0.5, 'You haven\'t played yet', horizontalalignment='center', verticalalignment='center')
-            plt.title('Your Last 5 Game Scores')
-            plt.xlabel('Games')
-            plt.ylabel('Scores')
-        user_scores_plot = plot_to_img()
+        # Create plots
+        user_scores_plot = plot_scores(user_scores)
+        avg_scores_plot = plot_avg_scores_distribution(user_avg_score, other_users_avg_scores)
 
-        # Create average scores plot
-        plt.figure(figsize=(10, 5))
-        if other_users_avg_scores:
-            min_avg_score = min(all_avg_scores)
-            max_avg_score = max(all_avg_scores)
-            bins = range(int(min_avg_score), int(max_avg_score) + 2)  # Ensure each score gets its own bin
-            plt.hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users')
-            plt.axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
-            plt.title('Average Scores Distribution')
-            plt.xlabel('Average Score')
-            plt.ylabel('Number of Users')
-            plt.legend()
-        else:
-            plt.text(0.5, 0.5, 'No scores from other users', horizontalalignment='center', verticalalignment='center')
-            plt.title('Average Scores Distribution')
-            plt.xlabel('Average Score')
-            plt.ylabel('Number of Users')
-        avg_scores_plot = plot_to_img()
+        # Generate category plots
+        categories = [
+            "broken_access_control_scores", "cryptographic_failures_scores", "injection_scores", "insecure_design_scores",
+            "security_misconfiguration_scores", "vulnerable_and_outdates_components_scores",
+            "identification_and_authentication_failures_scores", "software_and_data_integrity_failures_scores",
+            "security_logging_and_monitoring_failures_scores", "server_side_request_forgery_scores"
+        ]
+
+        category_plots = []
+        for category in categories:
+            cat_user_scores, cat_other_users_scores = get_category_scores(user_id, category)
+            cat_user_scores_plot, cat_avg_scores_plot = plot_category_scores(category, cat_user_scores,
+                                                                             cat_other_users_scores)
+            category_plots.append((category.replace('_', ' ').title(), cat_user_scores_plot, cat_avg_scores_plot))
 
         return render_template(
             'user_summarise.html',
-            username=session['username'],
+            username=username,
             user_scores=user_scores,
             user_avg_score=user_avg_score if user_scores else "Play a game to get an average",
             user_rank=user_rank,
             user_scores_plot=user_scores_plot,
-            avg_scores_plot=avg_scores_plot
+            avg_scores_plot=avg_scores_plot,
+            category_plots=category_plots
         )
 
 

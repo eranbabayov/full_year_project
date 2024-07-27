@@ -225,24 +225,22 @@ def get_solutions_based_to_challenge_id(challenge_id: int) -> list:
         return cursor.fetchall()
 
 
-def get_questions_and_solutions_based_to_categories_list(categories_list: list) -> list[tuple] | None:
+def get_questions_and_solutions_based_to_categories_list(category) -> tuple | None:
     # Generate a random category from the categories list
-    available_questions = []
-    with conn.cursor(as_dict=True) as cursor:
-        for category in categories_list:
-            # Retrieve a random question from the chosen category
-            cursor.execute(
-                "SELECT * FROM Challenges WHERE category = %s", (category,))
 
-            results = cursor.fetchall()
-            if not results:
-                return None
-            # select a random challenge from all the challenges
-            random_challenge = random.choice(results)
-            solution = get_solutions_based_to_challenge_id(random_challenge['challengeID'])
-            random.shuffle(solution)
-            available_questions.append((random_challenge, solution))
-    return available_questions
+    with conn.cursor(as_dict=True) as cursor:
+        # Retrieve a random question from the chosen category
+        cursor.execute(
+            "SELECT * FROM Challenges WHERE category = %s", (category,))
+        results = cursor.fetchall()
+        if not results:
+            return None
+        # select a random challenge from all the challenges
+        random_challenge = random.choice(results)
+        solution = get_solutions_based_to_challenge_id(random_challenge['challengeID'])
+        random.shuffle(solution)
+
+    return random_challenge, solution
 
 
 def insert_new_grade(user_id: int, grade: int) -> None:
@@ -302,14 +300,75 @@ def get_summarise_user_info(user_id):
     return user_scores, other_users_scores
 
 
+def plot_category_scores(category, user_scores, other_users_scores):
+    # Plot user scores
+    plt.figure(figsize=(10, 5))
+    if user_scores:
+        plt.plot(user_scores, marker='o', label='Your Scores')
+        plt.title(f'Your Scores in {category}')
+        plt.xlabel('Attempts')
+        plt.ylabel('Scores')
+        plt.legend()
+    else:
+        plt.text(0.5, 0.5, 'You haven\'t played yet', horizontalalignment='center', verticalalignment='center')
+        plt.title(f'Your Scores in {category}')
+        plt.xlabel('Attempts')
+        plt.ylabel('Scores')
+    user_scores_plot = plot_to_img()
+
+    # Calculate averages for other users
+    other_users_avg_scores = []
+    if other_users_scores:
+        for scores in other_users_scores:
+            filtered_scores = [score for score in scores if score is not None]
+            if filtered_scores:
+                other_users_avg_scores.append(sum(filtered_scores) / len(filtered_scores))
+
+    # Plot average scores distribution
+    plt.figure(figsize=(10, 5))
+    if other_users_avg_scores:
+        user_avg_score = calculate_average(user_scores)
+        min_avg_score = min(other_users_avg_scores + [user_avg_score])
+        max_avg_score = max(other_users_avg_scores + [user_avg_score])
+        bins = range(int(min_avg_score), int(max_avg_score) + 2)  # Ensure each score gets its own bin
+
+        plt.hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users', density=True)
+        plt.axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
+        plt.title(f'Average Scores Distribution in {category}')
+        plt.xlabel('Average Score')
+        plt.ylabel('Density')
+        plt.legend()
+    else:
+        plt.text(0.5, 0.5, 'No scores from other users', horizontalalignment='center', verticalalignment='center')
+        plt.title(f'Average Scores Distribution in {category}')
+        plt.xlabel('Average Score')
+        plt.ylabel('Density')
+    avg_scores_plot = plot_to_img()
+
+    return user_scores_plot, avg_scores_plot
+
+
+def get_category_scores(user_id, category):
+    with conn.cursor() as cursor:
+        cursor.execute(
+            f'''SELECT score1, score2, score3, score4, score5
+                FROM {category}
+                WHERE userID = %s''', (user_id,))
+        user_scores = cursor.fetchone()
+
+        cursor.execute(
+            f'''SELECT score1, score2, score3, score4, score5
+                FROM {category}
+                WHERE userID != %s''', (user_id,))
+        other_users_scores = cursor.fetchall()
+
+    return user_scores, other_users_scores
+
+
 def save_grade_based_to_category(user_id: int, grade: float, table_name: str) -> None:
     with conn.cursor() as cursor:
         # Sanitize the table name to prevent SQL injection
         table_name = table_name.replace(" ", "_").lower() + "_scores"  # Example of simple sanitation
-        logging.debug("$$$$$$$$$$$$$$$$$$$44")
-        logging.debug(table_name)
-        logging.debug(f"grade: {grade} type: {type(grade)}")
-        logging.debug(f"user_id: {user_id} type: {type(user_id)}")
 
         # Ensure that the table_name does not contain any disallowed characters
         if not table_name.isidentifier():
@@ -341,6 +400,52 @@ def save_grade_based_to_category(user_id: int, grade: float, table_name: str) ->
             )
 
         conn.commit()
+
+def calculate_average(scores):
+    if not scores:
+        return 0
+    filtered_scores = [score for score in scores if score is not None]
+    return sum(filtered_scores) / len(filtered_scores) if filtered_scores else 0
+
+def calculate_user_rank(user_avg_score, other_users_avg_scores):
+    if not other_users_avg_scores:
+        return "N/A"
+    all_avg_scores = other_users_avg_scores + [user_avg_score]
+    return sorted(all_avg_scores, reverse=True).index(user_avg_score) + 1
+
+def plot_scores(scores):
+    plt.figure(figsize=(10, 5))
+    if scores:
+        plt.plot(scores, marker='o', label='Your Scores')
+        plt.title('Your Last 5 Game Scores')
+        plt.xlabel('Games')
+        plt.ylabel('Scores')
+        plt.legend()
+    else:
+        plt.text(0.5, 0.5, 'You haven\'t played yet', horizontalalignment='center', verticalalignment='center')
+        plt.title('Your Last 5 Game Scores')
+        plt.xlabel('Games')
+        plt.ylabel('Scores')
+    return plot_to_img()
+
+def plot_avg_scores_distribution(user_avg_score, other_users_avg_scores):
+    plt.figure(figsize=(10, 5))
+    if other_users_avg_scores:
+        min_avg_score = min(other_users_avg_scores + [user_avg_score])
+        max_avg_score = max(other_users_avg_scores + [user_avg_score])
+        bins = range(int(min_avg_score), int(max_avg_score) + 2)  # Ensure each score gets its own bin
+        plt.hist(other_users_avg_scores, bins=bins, alpha=0.7, label='Other Users')
+        plt.axvline(user_avg_score, color='r', linestyle='dashed', linewidth=2, label='Your Average')
+        plt.title('Average Scores Distribution')
+        plt.xlabel('Average Score')
+        plt.ylabel('Number of Users')
+        plt.legend()
+    else:
+        plt.text(0.5, 0.5, 'No scores from other users', horizontalalignment='center', verticalalignment='center')
+        plt.title('Average Scores Distribution')
+        plt.xlabel('Average Score')
+        plt.ylabel('Number of Users')
+    return plot_to_img()
 
 def plot_to_img():
     buf = BytesIO()
