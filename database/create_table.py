@@ -4,8 +4,11 @@ import time
 from dotenv import load_dotenv
 import os
 # Load the CSV file
-challenges_file_path = 'Challenges_Wexplanations.csv'
-Solutions_file_path = 'Solutions_Wexplanations.csv'
+#challenges_file_path = 'Challenges_Wexplanations.csv'
+#Solutions_file_path = 'Solutions_Wexplanations.csv'
+challenges_file_path = 'database/Challenges_Wexplanations.csv'
+Solutions_file_path = 'database/Solutions_Wexplanations.csv'
+
 
 challenges_df = pd.read_csv(challenges_file_path)
 Solutions_df = pd.read_csv(Solutions_file_path)

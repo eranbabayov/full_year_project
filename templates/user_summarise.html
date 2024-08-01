@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Quiz Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='website1.css') }}">
 </head>
+
 <body>
     <div class="container">
         <h1>{{ username }}'s Dashboard</h1>
 
         <a href="{{ url_for('logout') }}">
-            <button type="submit">Logout</button>
+            <button class="button" type="submit">Logout</button>
         </a>
         <br><br>
 
         <a href="{{ url_for('user_dashboard', name=username) }}">
-            <button type="submit">Back to Homepage</button>
+            <button class="button" type="submit">Back to Homepage</button>
         </a>
         <br><br>
 
@@ -32,14 +34,15 @@
         <img src="data:image/png;base64,{{ avg_scores_plot }}" alt="Average Scores Plot">
 
         {% if category_plots %}
-            <h3>Category Statistics:</h3>
-            {% for category, plot in category_plots %}
-                <h4>{{ category }}</h4>
-                <h5>Your Scores:</h5>
-                <img src="data:image/png;base64,{{ plot }}" alt="Your Scores in {{ category }}">
-            {% endfor %}
+        <h3>Category Statistics:</h3>
+        {% for category, plot in category_plots %}
+        <h4>{{ category }}</h4>
+        <h5>Your Scores:</h5>
+        <img src="data:image/png;base64,{{ plot }}" alt="Your Scores in {{ category }}">
+        {% endfor %}
         {% endif %}
 
     </div>
 </body>
+
 </html>
