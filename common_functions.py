@@ -400,7 +400,7 @@ def calculate_average(scores):
     if not scores:
         return 0
     filtered_scores = [score for score in scores if score is not None]
-    return sum(filtered_scores) / len(filtered_scores) if filtered_scores else 0
+    return float(f"{sum(filtered_scores) / len(filtered_scores):.1f}") if filtered_scores else 0.0
 
 
 def calculate_user_rank(user_avg_score, other_users_avg_scores):

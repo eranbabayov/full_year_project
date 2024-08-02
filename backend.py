@@ -129,12 +129,8 @@ def user_dashboard(name):
 def start_game():
     chosen_categories_list = session.get('chosen_categories_list')
     if chosen_categories_list:
-        logging.debug(chosen_categories_list[0])
         current_challenge, current_solution = get_questions_and_solutions_based_to_categories_list(chosen_categories_list[0])
         session['chosen_categories_list'] = chosen_categories_list
-        logging.debug(current_challenge)
-        logging.debug(current_solution)
-
         return render_template('questions_answers.html', challenge=current_challenge, solutions=current_solution)
     return redirect(url_for('call_game'))
 
@@ -161,14 +157,8 @@ def next_challenge(current_id):
     single_category_grade = (detect_error_result + submit_correction_result) / 2
     save_grade_based_to_category(user_id=session['userID'], grade=single_category_grade,
                                  table_name=chosen_categories_list[0])
-    logging.debug("############################")
-    logging.debug(single_category_grade)
-    logging.debug("############################")
     game_grade = session['game_grade']
-    logging.debug(game_grade)
     game_grade[str(current_id)] = (detect_error_result, submit_correction_result)
-    logging.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    logging.debug(game_grade)
 
     session['game_grade'] = game_grade  # Re-assign to ensure it's stored in the session
     if chosen_categories_list:
