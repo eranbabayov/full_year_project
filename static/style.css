@@ -3,6 +3,7 @@ label,
 p {
   color: #01579b
 }
+
 .flashes,
 .flashes li,
 .success-message,
@@ -10,6 +11,7 @@ h1,
 p {
   text-align: center
 }
+
 body {
   font-family: Arial, sans-serif;
   background-color: #68c7ff;
@@ -23,31 +25,37 @@ body {
   align-items: center;
   height: 100vh
 }
+
 .login-container {
   width: 25vw;
   margin: 50px auto;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,.1);
-  background-color: rgba(255,255,255,.3)
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  background-color: rgba(255, 255, 255, .3)
 }
+
 .success-message,
 form,
 h1 {
   margin-bottom: 20px
 }
+
 .success-message {
   background-color: #9DDAA7;
   color: #F1F3F1;
   padding: 15px;
   border-radius: 8px
 }
+
 h1 {
   font-size: 24px
 }
+
 label {
   font-weight: 700
 }
+
 input[type=password],
 input[type=text] {
   width: 100%;
@@ -57,6 +65,7 @@ input[type=text] {
   border-radius: 4px;
   box-sizing: border-box
 }
+
 button {
   width: 100%;
   padding: 10px 20px;
@@ -66,21 +75,26 @@ button {
   border-radius: 4px;
   cursor: pointer
 }
+
 button:hover {
   background-color: #01395a
 }
+
 p a {
   color: #01395a;
   text-decoration: none
 }
+
 p a:hover {
   text-decoration: underline
 }
+
 .flashes {
   list-style-type: none;
   padding: 0;
   margin: 0
 }
+
 .flashes li {
   color: red;
   display: block;
@@ -100,4 +114,55 @@ p a:hover {
 
 .checkbox input {
   margin-right: 10px;
+}
+
+.button-3 {
+  appearance: none;
+  background-color: #2ea44f;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.button-3:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.button-3:hover {
+  background-color: #2c974b;
+}
+
+.button-3:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+}
+
+.button-3:disabled {
+  background-color: #94d3a2;
+  border-color: rgba(27, 31, 35, .1);
+  color: rgba(255, 255, 255, .8);
+  cursor: default;
+}
+
+.button-3:active {
+  background-color: #298e46;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
 }
