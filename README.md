@@ -99,7 +99,6 @@ The full_year_project is a web-based educational platform aimed at cybersecurity
     └── templates
         ├── cardGeneral.html
         ├── change_password.html
-        ├── dashboard.html
         ├── game_finish.html
         ├── login.html
         ├── password_reset.html

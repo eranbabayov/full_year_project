@@ -37,13 +37,6 @@ def limit_login_attempts():
         return f"Your IP is blocked for {block_time} seconds", 403
 
 
-@app.route('/')
-def index():
-    if 'username' in session:
-        return redirect(url_for('dashboard'))
-    return redirect(url_for('login'))
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -64,7 +57,7 @@ def login():
             session['username'] = username
             session['userID'] = user_data['userID']
             failed_login_attempts[request.remote_addr] = 0
-            return redirect(url_for('user_dashboard',name= username))
+            return redirect(url_for('user_dashboard',name=username))
         else:
             flash('Invalid username or password')
             failed_login_attempts[request.remote_addr] += 1
@@ -112,16 +105,10 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/dashboard')
-def dashboard():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    username = session['username']
-    return render_template('user_dashboard.html', username=username)
-
-
 @app.route('/<name>/dashboard')
 def user_dashboard(name):
+    if 'username' not in session or session['username'] != name:
+        return redirect(url_for('login'))
     return render_template('user_dashboard.html', username=name)
 
 
@@ -177,7 +164,8 @@ def set_new_pwd():
     user_data = session.get('user_data')
     username = session.get("username")
     if not user_data and not username:
-        return redirect(url_for('index'))
+        logging.debug("There is no such user!")
+        return redirect(url_for('login'))
     if request.method == "POST":
         if not user_data:
             user_data = get_user_data_from_db(username=username)
