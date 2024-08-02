@@ -211,13 +211,6 @@ def check_if_reset_token_exists(reset_token) -> dict:
         return cursor.fetchone()
 
 
-def get_challenges_based_to_challenge_id(challenge_id: int) -> dict:
-    with conn.cursor(as_dict=True) as cursor:
-        cursor.execute(
-            "SELECT * FROM Challenges WHERE challengeID = %s", (challenge_id,))
-        return cursor.fetchone()
-
-
 def get_solutions_based_to_challenge_id(challenge_id: int) -> list:
     with conn.cursor(as_dict=True) as cursor:
         cursor.execute(

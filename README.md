@@ -75,7 +75,6 @@ The full_year_project is a web-based educational platform aimed at cybersecurity
     ├── README.md
     ├── app_configuration.py
     ├── backend.py
-    ├── chalanges.py
     ├── common_functions.py
     ├── database
     │   ├── Challenges_Wexplanations.csv
