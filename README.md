@@ -26,22 +26,6 @@
 </p>
 <hr>
 
-##  Quick Links
-
-> - [ Overview](#-overview)
-> - [ Features](#-features)
-> - [ Repository Structure](#-repository-structure)
-> - [ Modules](#-modules)
-> - [ Getting Started](#-getting-started)
->   - [ Installation](#-installation)
->   - [ Running full_year_project](#-running-full_year_project)
->   - [ Tests](#-tests)
-> - [ Project Roadmap](#-project-roadmap)
-> - [ Contributing](#-contributing)
-> - [ License](#-license)
-> - [ Acknowledgments](#-acknowledgments)
-
----
 
 ##  Overview
 
@@ -55,10 +39,8 @@ The full_year_project is a web-based educational platform aimed at cybersecurity
 |----|---------------------|--------------------------------------------------------------------|
 | ⚙️  | **Architecture**    | *Multi-container Docker setup with Flask backend and MSSQL database.* |
 | 🔩 | **Code Quality**    | *Clean, with structured Flask-oriented modules for maintainability.*  |
-| 📄 | **Documentation**   | *Partial inline comments, lacks extensive external documentation.*  |
 | 🔌 | **Integrations**    | *Flask integrations with HTML templates and email, plus Docker.*    |
 | 🧩 | **Modularity**      | *Code is structured in modular files, though could be componentized.*|
-| 🧪 | **Testing**         | *Testing frameworks not readily apparent in repository.*            |
 | ⚡️  | **Performance**     | *Performance insights are limited without load tests or telemetry.* |
 | 🛡️ | **Security**        | *Password policies enforced, yet broader security audit required.*  |
 | 📦 | **Dependencies**    | *Flask, pymssql, python-dotenv, Flask-Mail, matplotlib, etc.*      |
