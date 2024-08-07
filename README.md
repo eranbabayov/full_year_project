@@ -169,15 +169,8 @@ cd full_year_project
 3. Install the dependencies:
 
 ```sh
-> INSERT-INSTALL-COMMANDS
-```
-
-###  Running full_year_project
-
-Use the following command to run full_year_project:
-
-```sh
-> INSERT-RUN-COMMANDS
+docker-compose
+create_table.py
 ```
 ---
 
