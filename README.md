@@ -126,7 +126,6 @@ The full_year_project is a web-based educational platform aimed at cybersecurity
 | [password_reset.html](https://github.com/eranbabayov/full_year_project/blob/master/templates/password_reset.html)             | This HTML template renders the password reset page within the web application, allowing users to request a password change via email.                            |
 | [user_dashboard.html](https://github.com/eranbabayov/full_year_project/blob/master/templates/user_dashboard.html)             | The `user_dashboard.html` serves as the user interface for account management and activity overview within the web platform's architecture.                      |
 | [password_reset_token.html](https://github.com/eranbabayov/full_year_project/blob/master/templates/password_reset_token.html) | Provides user interface for token-based password reset as part of a web application's authentication flow.                                                       |
-| [dashboard.html](https://github.com/eranbabayov/full_year_project/blob/master/templates/dashboard.html)                       | The dashboard.html is the user interface for logged-in users, providing welcome messages and options to logout or change password within the web application.    |
 | [change_password.html](https://github.com/eranbabayov/full_year_project/blob/master/templates/change_password.html)           | Handles web app backend logic; integrates with database, manages user authentication, and serves challenge content.                                              |
 
 </details>
